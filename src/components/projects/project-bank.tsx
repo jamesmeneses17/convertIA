@@ -318,7 +318,7 @@ export function ProjectBank({ initialProjects }: ProjectBankProps) {
               variant="outline"
               onClick={() => {
                 if (!vistaPrevia?.pastedCode) return;
-                const documento = composePreviewDocument(vistaPrevia.pastedCode);
+                const documento = composePreviewDocument(vistaPrevia.pastedCode, { sonda: false });
                 downloadTextFile(`${slugify(vistaPrevia.name) || 'landing'}.html`, documento, 'text/html');
                 toast.success('index.html descargado');
               }}

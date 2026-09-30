@@ -1,3 +1,4 @@
+import { repararAcentos } from '@/lib/locucion';
 import type { PastedCode } from '@/lib/types';
 
 /**
@@ -47,6 +48,10 @@ const RESET = [
   '  html{-webkit-text-size-adjust:100%}',
   '  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}',
   '  img,video,svg{max-width:100%;height:auto}',
+  '  /* Un <video> sin fuente se ve como un recuadro negro roto: lo ocultamos */',
+  '  /* hasta que ConvertIA le pone el archivo. Lo mismo con su seccion. */',
+  '  video:not([src]):not(:has(source[src])){display:none}',
+  '  #presentador-convertia:not(:has(video[src])):not(:has(source[src])){display:none}',
   '  *,*::before,*::after{box-sizing:border-box}',
   '</style>',
 ].join('\n');
@@ -56,18 +61,74 @@ const RESET = [
  * - Si el HTML ya es un documento completo, inyecta el CSS y el JS extra.
  * - Si es un fragmento, lo envuelve en un documento minimo.
  */
-export function composePreviewDocument(code: PastedCode): string {
+/**
+ * Script de diagnostico que solo vive en la previsualizacion.
+ *
+ * Etiqueta cada <img> con el servicio del que viene, para que al pasar el raton
+ * por encima se vea de donde salio, y avisa a ConvertIA de cuales han cargado y
+ * cuales no. Nunca se incluye en el archivo que descargas.
+ */
+const SONDA_IMAGENES = [
+  '<script data-convertia="sonda-imagenes">',
+  '(function(){',
+  '  function servicio(u){',
+  '    u = String(u || "");',
+  '    if (u.indexOf("data:") === 0) return "Incrustada";',
+  '    var h = "";',
+  '    try { h = new URL(u, location.href).hostname.toLowerCase(); } catch (e) { h = ""; }',
+  '    if (h.indexOf("pollinations") > -1) return "Pollinations";',
+  '    if (h.indexOf("unsplash") > -1) return "Unsplash";',
+  '    if (h.indexOf("picsum") > -1) return "Picsum";',
+  '    if (h.indexOf("placehold") > -1 || h.indexOf("dummyimage") > -1) return "Marcador";',
+  '    return h || "Archivo local";',
+  '  }',
+  '  function revisar(){',
+  '    var imgs = document.querySelectorAll("img");',
+  '    var lista = [];',
+  '    for (var i = 0; i < imgs.length; i++) {',
+  '      var img = imgs[i];',
+  '      var s = servicio(img.currentSrc || img.getAttribute("src"));',
+  '      var roto = img.complete && img.naturalWidth === 0;',
+  '      img.title = roto ? (s + " - no cargo") : ("Imagen de " + s);',
+  '      if (roto) {',
+  '        img.setAttribute("data-convertia-fallo", s);',
+  '        if (img.alt.indexOf("[") !== 0) img.alt = "[" + s + " no cargo] " + img.alt;',
+  '      }',
+  '      lista.push({ servicio: s, ok: !roto });',
+  '    }',
+  '    try { parent.postMessage({ tipo: "convertia:imagenes", items: lista }, "*"); } catch (e) {}',
+  '  }',
+  '  window.addEventListener("load", revisar);',
+  '  document.addEventListener("error", revisar, true);',
+  '  setTimeout(revisar, 2500);',
+  '  setTimeout(revisar, 8000);',
+  '})();',
+  '</script>',
+  '<style data-convertia="sonda-estilo">',
+  '  img[data-convertia-fallo]{min-height:96px;background:repeating-linear-gradient(45deg,#3a2020,#3a2020 8px,#2b1818 8px,#2b1818 16px);outline:1px dashed #b45757;outline-offset:-1px}',
+  '</style>',
+].join('\n');
+
+export interface PreviewOptions {
+  /** Inyecta la sonda de imagenes. Falso para el archivo que se descarga. */
+  sonda?: boolean;
+}
+
+export function composePreviewDocument(code: PastedCode, options: PreviewOptions = {}): string {
   const css = code.css.trim() ? `<style data-convertia="user-css">\n${code.css}\n</style>` : '';
   const js = code.js.trim() ? `<script data-convertia="user-js">\n${code.js}\n</script>` : '';
   const html = code.html.trim();
 
   if (!html && !css && !js) return '';
 
+  const sonda = options.sonda === false ? '' : SONDA_IMAGENES;
+
   if (html && isFullDocument(html)) {
     let output = html;
     output = injectIntoHead(output, RESET);
     output = injectIntoHead(output, css);
     output = injectIntoBody(output, js);
+    output = injectIntoBody(output, sonda);
     return output;
   }
 
@@ -84,11 +145,75 @@ export function composePreviewDocument(code: PastedCode): string {
     '<body>',
     html,
     js,
+    sonda,
     '</body>',
     '</html>',
   ]
     .filter((part) => part.length > 0)
     .join('\n');
+}
+
+/**
+ * De que servicio viene una imagen, mirando su URL. Es lo unico que hace falta:
+ * en Pollinations el propio enlace lleva dentro el texto que genera la imagen.
+ */
+export function servicioDeImagen(url: string): { nombre: string; detalle: string } {
+  const limpia = (url || '').trim();
+
+  if (limpia.startsWith('data:')) {
+    return { nombre: 'Incrustada', detalle: 'La imagen viaja dentro del propio HTML.' };
+  }
+
+  let host = '';
+  try {
+    host = new URL(limpia, 'http://local').hostname.toLowerCase();
+  } catch {
+    host = '';
+  }
+
+  if (host.includes('pollinations')) {
+    return {
+      nombre: 'Pollinations',
+      detalle:
+        'Ya no sirve imagenes anonimas (responde 402): estos enlaces no cargan. Pulsa "Cambiar por fotos reales".',
+    };
+  }
+  if (host.includes('unsplash')) {
+    return { nombre: 'Unsplash', detalle: 'Foto de banco buscada por palabra clave.' };
+  }
+  if (host.includes('picsum')) {
+    return {
+      nombre: 'Picsum',
+      detalle: 'Foto de relleno: siempre carga, pero no tiene que ver con el tema.',
+    };
+  }
+  if (host.includes('placehold') || host.includes('dummyimage')) {
+    return { nombre: 'Marcador', detalle: 'Rectangulo de relleno, no es una foto real.' };
+  }
+  if (!host) return { nombre: 'Archivo local', detalle: 'Ruta relativa: no se vera fuera de su carpeta.' };
+
+  return { nombre: host, detalle: 'Servicio externo no reconocido por ConvertIA.' };
+}
+
+/** Una imagen del documento, con su procedencia. */
+export interface ImagenDetectada {
+  src: string;
+  servicio: string;
+  detalle: string;
+}
+
+/** Lista las imagenes del HTML y de que servicio viene cada una. */
+export function listarImagenes(html: string): ImagenDetectada[] {
+  const encontradas: ImagenDetectada[] = [];
+  const etiqueta = /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
+  let coincidencia: RegExpExecArray | null;
+
+  while ((coincidencia = etiqueta.exec(html)) !== null) {
+    const src = coincidencia[1] ?? '';
+    const { nombre, detalle } = servicioDeImagen(src);
+    encontradas.push({ src, servicio: nombre, detalle });
+  }
+  return encontradas;
 }
 
 interface FencedBlock {
@@ -207,15 +332,65 @@ export function guionDesdeBrief(brief: {
   const oferta = brief.offer.trim();
   if (!oferta) return '';
 
-  const publico = brief.audience.trim();
-  const accion = brief.cta.trim();
+  const publico = brief.audience.trim().toLowerCase().replace(/^(los|las)\s+/, '');
+  const accion = brief.cta.trim().toLowerCase();
+  const tema = brief.topic.trim().toLowerCase();
 
-  return [
-    `Hola. Si ${publico ? publico.toLowerCase().replace(/^(los|las)\s+/, '') : 'esto va contigo'}, escucha esto.`,
-    `${oferta}.`,
-    'Sin letra pequena y sin compromiso: lo miras, y si no te encaja, lo dejas.',
-    accion ? `Cuando quieras, ${accion.toLowerCase()}. Te respondemos el mismo dia.` : 'Cuando quieras, escribenos.',
-  ].join(' ');
+  /**
+   * Seis guiones distintos. La eleccion sale del propio brief, no del azar:
+   * asi el mismo proyecto siempre propone el mismo guion (y no cambia solo
+   * mientras escribes), pero dos proyectos distintos suenan distinto.
+   */
+  const semilla = [...`${brief.topic}${brief.offer}`].reduce(
+    (suma, letra) => (suma * 31 + letra.charCodeAt(0)) % 100_000,
+    7,
+  );
+
+  const cierre = accion ? `Cuando quieras, ${accion}.` : 'Cuando quieras, escribenos.';
+
+  const guiones = [
+    [
+      `Hola. Si ${publico || 'esto va contigo'}, escucha esto.`,
+      `${oferta}.`,
+      'Sin letra pequena y sin compromiso: lo miras, y si no te encaja, lo dejas.',
+      cierre,
+    ],
+    [
+      'Te voy a ahorrar tiempo y te lo cuento en treinta segundos.',
+      `${oferta}.`,
+      `Esto es para ${publico || 'gente como tu'}. Si no eres tu, no pasa nada.`,
+      cierre,
+    ],
+    [
+      `Seguramente ya lo intentaste antes y no salio. Es lo normal en ${tema || 'esto'}.`,
+      `Por eso lo montamos asi: ${oferta}.`,
+      'Nada de promesas raras. Lo ves, lo pruebas y decides.',
+      cierre,
+    ],
+    [
+      `Una pregunta rapida para ${publico || 'ti'}: cuanto llevas dandole vueltas a esto?`,
+      `${oferta}.`,
+      'El primer paso es corto y no te compromete a nada.',
+      cierre,
+    ],
+    [
+      'Voy al grano, que se que tienes prisa.',
+      `${oferta}.`,
+      `Si ${publico || 'esto te suena'}, te va a encajar. Si no, mejor que lo sepas ya.`,
+      cierre,
+    ],
+    [
+      `Esto no es para todo el mundo. Es para ${publico || 'quien va en serio'}.`,
+      `${oferta}.`,
+      'Lo demas te lo contamos cuando hablemos, sin rodeos.',
+      cierre,
+    ],
+  ];
+
+  const elegido = guiones[semilla % guiones.length] ?? guiones[0]!;
+
+  // Tavus LEE el texto: sin tildes ni enies pronuncia "anos" por "años".
+  return repararAcentos(elegido.join(' '));
 }
 
 /**
@@ -250,9 +425,38 @@ export function extraerGuionPresentador(html: string): string {
     .join(' ');
 }
 
-/** Coloca el video del presentador justo despues de la primera seccion. */
+/** Hueco que el Prompt Maestro reserva para el presentador. */
+const HUECO_PRESENTADOR = /(<section[^>]*id=["']presentador-convertia["'][^>]*>)([\s\S]*?)(<\/section>)/i;
+
+/**
+ * Coloca el video del presentador. Si el Prompt Maestro dejo el hueco reservado
+ * lo rellena ahi; si no, lo inserta despues de la primera seccion.
+ */
 export function insertarPresentador(html: string, url: string): { html: string; cambiado: boolean } {
   if (!html.trim()) return { html, cambiado: false };
+
+  const hueco = html.match(HUECO_PRESENTADOR);
+  if (hueco) {
+    // El hueco nace oculto para que no se vea un reproductor vacio.
+    const apertura = (hueco[1] ?? '').replace(/\shidden(?=[\s>])/i, '');
+    const cierre = hueco[3] ?? '</section>';
+    let cuerpo = hueco[2] ?? '';
+
+    if (/<video[^>]*>/i.test(cuerpo)) {
+      cuerpo = cuerpo.replace(/<video([^>]*)>/i, (_etiqueta, attrs: string) => {
+        const limpio = attrs.replace(/\ssrc=["'][^"']*["']/i, '');
+        return `<video${limpio} src="${url}">`;
+      });
+    } else {
+      cuerpo += `
+      <video src="${url}" controls playsinline style="width:100%"></video>`;
+    }
+
+    return {
+      html: html.replace(HUECO_PRESENTADOR, () => `${apertura}${cuerpo}${cierre}`),
+      cambiado: true,
+    };
+  }
 
   const bloque = [
     '',

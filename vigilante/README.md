@@ -1,13 +1,32 @@
 # Vigilante de ConvertIA
 
-Mira el buzon de ConvertIA cada 10 segundos y, **solo cuando hay un encargo pendiente**,
-despierta a Claude Code para que genere la landing y la entregue.
+Mira el buzon de ConvertIA cada 10 segundos y reacciona **solo cuando hay un encargo
+pendiente**. Vigilar es una peticion HTTP a tu propio ordenador: no cuesta nada.
 
-## Por que no consume cuota
+## Los dos modos
 
-Vigilar es una peticion HTTP a tu propio ordenador: no cuesta nada. Claude solo
-se despierta cuando de verdad hay trabajo. Es lo contrario de una tarea programada,
-donde era Claude quien miraba el buzon una y otra vez.
+| Modo | Que hace al encontrar trabajo | Cuota que gasta |
+| --- | --- | --- |
+| `aviso` (por defecto) | Notificacion de Windows + pitido. Tu lanzas la tarea del chat. | Chats |
+| `codigo` | Despierta el CLI de Claude Code y genera solo. | **Codigo** (la cara) |
+
+El modo `aviso` existe porque el `codigo` abre una sesion completa de Claude Code por cada
+encargo, y esa es la cuota mas cara con diferencia. Con `aviso` el ordenador sigue haciendo
+la guardia gratis, pero el trabajo se ejecuta en una conversacion de chat.
+
+**El flujo en modo aviso:**
+
+```
+Pides la landing en ConvertIA
+        v
+El encargo entra en PostgreSQL
+        v
+El vigilante lo ve (gratis) -> notificacion de Windows
+        v
+Abres Claude > Programadas > "ConvertIA - atender el buzon" > Ejecutar ahora
+        v
+La landing aparece sola en el visor
+```
 
 ## Arrancarlo
 
@@ -17,14 +36,20 @@ Doble clic en `iniciar-vigilante.cmd`, o desde una terminal:
 node vigilante/vigilante.mjs
 ```
 
+Para el modo automatico de Claude Code (mas caro):
+
+```
+set VIGILANTE_MODO=codigo && node vigilante/vigilante.mjs
+```
+
 Deja la ventana abierta. Para pararlo, cierrala.
 
 ## Que necesita
 
-- El CLI de Claude Code instalado (`npm install -g @anthropic-ai/claude-code`)
 - ConvertIA levantado (`docker compose up -d`)
-- El archivo `mcp-convertia.json` de esta carpeta, que le dice a Claude como
-  hablar con ConvertIA
+- En modo `aviso`: nada mas. No hace falta el CLI de Claude.
+- En modo `codigo`: el CLI de Claude Code (`npm install -g @anthropic-ai/claude-code`) y el
+  archivo `mcp-convertia.json` de esta carpeta
 
 ## Arrancarlo con Windows
 
@@ -37,12 +62,15 @@ A partir de ahi arranca solo al encender el ordenador.
 
 | Variable | Para que sirve | Por defecto |
 | --- | --- | --- |
+| `VIGILANTE_MODO` | `aviso` o `codigo` | `aviso` |
 | `CONVERTIA_URL` | Donde esta ConvertIA | `http://localhost:3300` |
 | `VIGILANTE_INTERVALO` | Cada cuanto mira, en milisegundos | `10000` |
+| `VIGILANTE_REPETIR` | Cada cuanto repite el aviso de un encargo sin atender | `600000` (10 min) |
 
 ## Si algo falla
 
 - **"No veo ConvertIA"**: levanta el contenedor con `docker compose up -d`.
-- **"No se pudo lanzar el CLI"**: abre una terminal nueva y comprueba `claude --version`.
-- **Claude pide permisos**: el vigilante ya autoriza solo las cuatro herramientas de
-  ConvertIA. Si aun asi pregunta, ejecuta una vez `claude` a mano y acepta.
+- **No sale la notificacion**: el aviso tambien se escribe en la ventana del vigilante.
+  Comprueba que las notificaciones de Windows no esten en "No molestar".
+- **"No se pudo lanzar el CLI"** (solo en modo `codigo`): abre una terminal nueva y
+  comprueba `claude --version`.

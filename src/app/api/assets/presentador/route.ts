@@ -9,6 +9,7 @@ import {
   listarReplicas,
   type EventoTavus,
 } from '@/lib/tavus';
+import { repararAcentos } from '@/lib/locucion';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -98,7 +99,8 @@ export async function POST(request: NextRequest) {
 
       try {
         const creado = await crearVideo({
-          guion: datos.guion,
+          // Tavus LEE el texto en voz alta: sin tildes ni enies diria "anos".
+          guion: repararAcentos(datos.guion),
           replicaId: datos.replicaId,
           nombre: datos.nombre,
           fondoUrl: datos.fondoUrl,

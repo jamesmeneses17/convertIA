@@ -6,7 +6,10 @@ import {
   CircleStop,
   Download,
   Eraser,
+  Camera,
+  Image as ImageIcon,
   Loader2,
+  Undo2,
   Monitor,
   RefreshCw,
   Smartphone,
@@ -24,7 +27,13 @@ import { DesktopBridge } from '@/components/wizard/desktop-bridge';
 import { VideoGenerator } from '@/components/wizard/video-generator';
 import { PresenterGenerator } from '@/components/wizard/presenter-generator';
 import { Textarea } from '@/components/ui/textarea';
-import { codeStats, composePreviewDocument, isCodeEmpty, splitAiResponse } from '@/lib/preview';
+import {
+  codeStats,
+  composePreviewDocument,
+  isCodeEmpty,
+  listarImagenes,
+  splitAiResponse,
+} from '@/lib/preview';
 import {
   GenerationError,
   fetchGenerationStatus,
@@ -63,6 +72,9 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
    * la pagina este lista.
    */
   const [pedidoLanding, setPedidoLanding] = React.useState(0);
+
+  /** Se enciende al tocar el codigo a mano, para recordar que hay que guardar. */
+  const [editadoAMano, setEditadoAMano] = React.useState(false);
 
   // --- Modo de generacion integrada (solo si el servidor tiene API key) ---
   const [status, setStatus] = React.useState<GenerationStatus>({ enabled: false, model: null });
@@ -144,7 +156,134 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
     return () => window.clearTimeout(espera);
   }, [code]);
 
+  /**
+   * Resultado de la sonda que viaja dentro del iframe: cuantas imagenes de
+   * cada servicio han cargado y cuantas no. Solo asi se puede saber si una
+   * URL de Pollinations respondio o se quedo en blanco.
+   */
+  const [cargaImagenes, setCargaImagenes] = React.useState<{ servicio: string; ok: boolean }[]>([]);
+
+  React.useEffect(() => {
+    function alRecibir(evento: MessageEvent) {
+      const datos = evento.data as { tipo?: string; items?: { servicio?: string; ok?: boolean }[] };
+      if (!datos || datos.tipo !== 'convertia:imagenes' || !Array.isArray(datos.items)) return;
+      setCargaImagenes(
+        datos.items.map((item) => ({
+          servicio: typeof item.servicio === 'string' ? item.servicio : 'desconocido',
+          ok: item.ok === true,
+        })),
+      );
+    }
+    window.addEventListener('message', alRecibir);
+    return () => window.removeEventListener('message', alRecibir);
+  }, []);
+
+  /** Imagenes declaradas en el HTML, agrupadas por servicio. */
+  const imagenes = React.useMemo(() => listarImagenes(codigoEstable.html), [codigoEstable.html]);
+
+  const resumenImagenes = React.useMemo(() => {
+    const porServicio = new Map<string, { total: number; fallos: number; detalle: string }>();
+
+    for (const img of imagenes) {
+      const actual = porServicio.get(img.servicio) ?? { total: 0, fallos: 0, detalle: img.detalle };
+      actual.total += 1;
+      porServicio.set(img.servicio, actual);
+    }
+    for (const carga of cargaImagenes) {
+      if (carga.ok) continue;
+      const actual = porServicio.get(carga.servicio);
+      if (actual) actual.fallos += 1;
+    }
+    return [...porServicio.entries()].map(([servicio, datos]) => ({ servicio, ...datos }));
+  }, [imagenes, cargaImagenes]);
+
   const previewDoc = React.useMemo(() => composePreviewDocument(codigoEstable), [codigoEstable]);
+
+  /** true mientras el visor todavia no refleja lo ultimo que escribiste. */
+  const desfasado = codigoEstable !== code;
+
+  // --- Cambio de imagenes de IA por fotos reales de Unsplash ---
+  const [unsplashActivo, setUnsplashActivo] = React.useState(false);
+  const [cambiandoFotos, setCambiandoFotos] = React.useState(false);
+  /** HTML anterior al cambio, para poder deshacerlo. */
+  const [htmlConIA, setHtmlConIA] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    let vivo = true;
+    void fetch('/api/assets/fotos')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((datos: { activo?: boolean } | null) => {
+        if (vivo && datos) setUnsplashActivo(datos.activo === true);
+      })
+      .catch(() => undefined);
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  async function cambiarAFotosReales() {
+    if (cambiandoFotos || !code.html.trim()) return;
+    setCambiandoFotos(true);
+    const aviso = toast.loading('Buscando fotos en Unsplash...');
+
+    try {
+      const respuesta = await fetch('/api/assets/fotos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html: code.html }),
+      });
+      const datos = (await respuesta.json()) as {
+        html?: string;
+        cambiadas?: number;
+        intentadas?: number;
+        restantes?: number | null;
+        avisos?: string[];
+        error?: string;
+        detail?: string;
+      };
+
+      if (!respuesta.ok || !datos.html) {
+        toast.error(datos.error ?? 'No se pudo cambiar las imagenes', {
+          id: aviso,
+          description: datos.detail,
+        });
+        return;
+      }
+
+      if (!datos.cambiadas) {
+        toast.error('Unsplash no devolvio ninguna foto', {
+          id: aviso,
+          description: datos.avisos?.[0] ?? 'Prueba otra vez en un rato.',
+        });
+        return;
+      }
+
+      setHtmlConIA(code.html);
+      onChange({ ...code, html: datos.html });
+      setReloadKey((key) => key + 1);
+
+      const resto =
+        typeof datos.restantes === 'number'
+          ? ` · te quedan ${datos.restantes} busquedas esta hora`
+          : '';
+      toast.success(`${datos.cambiadas} de ${datos.intentadas} imagenes cambiadas${resto}`, {
+        id: aviso,
+        description: datos.avisos?.length ? datos.avisos[0] : 'Fotos reales de Unsplash.',
+      });
+    } catch {
+      toast.error('No se pudo contactar con el servidor', { id: aviso });
+    } finally {
+      setCambiandoFotos(false);
+    }
+  }
+
+  function deshacerFotos() {
+    if (!htmlConIA) return;
+    onChange({ ...code, html: htmlConIA });
+    setHtmlConIA(null);
+    setReloadKey((key) => key + 1);
+    toast.success('Restauradas las imagenes generadas con IA');
+  }
   const empty = isCodeEmpty(code);
   const stats = React.useMemo(() => codeStats(code), [code]);
 
@@ -168,13 +307,17 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
 
   function handleDownload() {
     if (!previewDoc) return;
-    downloadTextFile(`${slugify(projectName) || 'landing'}.html`, previewDoc, 'text/html');
+    // El archivo que te llevas va limpio: sin la sonda de diagnostico.
+    const limpio = composePreviewDocument(codigoEstable, { sonda: false });
+    downloadTextFile(`${slugify(projectName) || 'landing'}.html`, limpio, 'text/html');
     toast.success('index.html descargado');
   }
 
   function handleOpenInTab() {
     if (!previewDoc) return;
-    const blob = new Blob([previewDoc], { type: 'text/html;charset=utf-8' });
+    const blob = new Blob([composePreviewDocument(codigoEstable, { sonda: false })], {
+      type: 'text/html;charset=utf-8',
+    });
     const url = URL.createObjectURL(blob);
     const win = window.open(url, '_blank', 'noopener,noreferrer');
     if (!win) {
@@ -335,19 +478,32 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
               ) : null}
               <Textarea
                 value={code[editor.key]}
-                onChange={(event) => onChange({ ...code, [editor.key]: event.target.value })}
+                onChange={(event) => {
+                  setEditadoAMano(true);
+                  onChange({ ...code, [editor.key]: event.target.value });
+                }}
                 rows={10}
                 spellCheck={false}
                 placeholder={editor.placeholder}
                 aria-label={`Editor de ${editor.label}`}
                 className="scrollbar-thin font-mono text-xs"
               />
+              {editadoAMano ? (
+                <p className="rounded-md border border-primary/40 bg-primary/[0.06] px-3 py-2 text-xs leading-relaxed">
+                  <span className="font-medium">El visor de abajo ya muestra tus cambios</span> — se
+                  actualiza solo medio segundo despues de que dejes de escribir, sin gastar tokens.
+                  Lo que <span className="font-medium">no</span> se guarda solo: para que el cambio
+                  quede en el banco de proyectos tienes que pulsar{' '}
+                  <span className="font-medium">Actualizar proyecto</span>, al final de la pagina.
+                </p>
+              ) : null}
             </TabsContent>
           ))}
         </Tabs>
 
-        {/* ---------- Barra del visor ---------- */}
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-t-lg border border-border bg-muted/50 px-3 py-2">
+        {/* ---------- Visor: barra y lienzo, en una sola pieza ---------- */}
+        <div className="overflow-hidden rounded-lg border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-muted/50 px-3 py-2">
           <div className="flex items-center gap-1">
             {(Object.keys(VIEWPORTS) as Viewport[]).map((key) => {
               const item = VIEWPORTS[key];
@@ -369,6 +525,17 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
           </div>
 
           <div className="flex flex-wrap items-center gap-1">
+            {!empty ? (
+              <span
+                aria-live="polite"
+                className={cn(
+                  'mr-1 font-mono text-[0.65rem]',
+                  desfasado ? 'text-primary' : 'text-muted-foreground',
+                )}
+              >
+                {desfasado ? 'actualizando...' : 'vista al dia'}
+              </span>
+            ) : null}
             <Button
               size="sm"
               variant="ghost"
@@ -391,7 +558,7 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
         </div>
 
         {/* ---------- Iframe ---------- */}
-        <div className="-mt-5 overflow-hidden rounded-b-lg border border-t-0 border-border bg-[hsl(var(--muted))] p-3">
+        <div className="bg-[hsl(var(--muted))] p-3">
           {empty ? (
             <div className="grid h-[420px] place-items-center rounded-md border border-dashed border-border bg-background/40 text-center">
               <div className="max-w-sm px-6">
@@ -418,6 +585,67 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
             </div>
           )}
         </div>
+        </div>
+
+        {resumenImagenes.length > 0 ? (
+          <div className="rounded-lg border border-border bg-muted/30 p-3">
+            <p className="flex items-center gap-2 text-xs font-semibold">
+              <ImageIcon className="h-3.5 w-3.5 text-primary" />
+              De donde salen las imagenes
+              <span className="font-mono text-[0.65rem] font-normal text-muted-foreground">
+                {imagenes.length} en total
+              </span>
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {resumenImagenes.map((fila) => (
+                <li key={fila.servicio} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <Badge
+                    variant={fila.fallos > 0 ? 'destructive' : 'success'}
+                    className="font-mono text-[0.62rem]"
+                  >
+                    {fila.servicio}
+                  </Badge>
+                  <span className="font-mono text-[0.65rem] text-muted-foreground">
+                    {fila.total} {fila.total === 1 ? 'imagen' : 'imagenes'}
+                    {fila.fallos > 0 ? ` · ${fila.fallos} sin cargar` : ''}
+                  </span>
+                  <span className="text-[0.68rem] leading-relaxed text-muted-foreground">
+                    {fila.detalle}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[0.68rem] leading-relaxed text-muted-foreground">
+              Pasa el raton por encima de cualquier imagen del visor y te dice de que servicio
+              viene. Las que no cargaron salen rayadas y con el nombre del servicio en el texto
+              alternativo.
+            </p>
+
+            {unsplashActivo ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/60 pt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={cambiarAFotosReales}
+                  disabled={cambiandoFotos || empty}
+                >
+                  {cambiandoFotos ? <Loader2 className="animate-spin" /> : <Camera />}
+                  {cambiandoFotos ? 'Buscando...' : 'Cambiar por fotos reales'}
+                </Button>
+                {htmlConIA ? (
+                  <Button size="sm" variant="ghost" onClick={deshacerFotos}>
+                    <Undo2 />
+                    Volver a las de IA
+                  </Button>
+                ) : null}
+                <span className="text-[0.68rem] leading-relaxed text-muted-foreground">
+                  Unsplash busca una foto real para cada imagen, usando el texto en ingles que ya
+                  lleva dentro su enlace. Limite: 50 busquedas por hora.
+                </span>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <p className="text-[0.7rem] leading-relaxed text-muted-foreground">
           La previsualizacion corre aislada en un iframe con sandbox: el codigo pegado no puede acceder a

@@ -1,7 +1,7 @@
-# ENCARGO LP-7Z4J
+# ENCARGO LP-XQGC
 
-**Proyecto:** Sesiones de terapia cognitivo-conductual por videollamada, agenda f...
-**Creado:** 2026-09-30T14:57:52.518Z
+**Proyecto:** Corte y arreglo de barba con tecnica artesanal, productos sin sulfa...
+**Creado:** 2026-09-30T23:48:18.093Z
 
 ## Instrucciones para Claude
 
@@ -17,413 +17,387 @@
 ## PROMPT MAESTRO
 
 ==============================================================================
-PROMPT MAESTRO — LANDING PAGE
-Proyecto: terapia cognitivo-conductual en linea, con valoracion inicial gratuita
-Codigo interno: LP-DC2U · semilla 5261
+ENCARGO DE LANDING PAGE — BARBERÍA DE AUTOR · CIUDAD DE MÉXICO
+Nombre de trabajo del proyecto: NAVAJA
 ==============================================================================
 
 ------------------------------------------------------------------------------
-1. TU ROL Y EL ESTANDAR DE CALIDAD
+1. QUIÉN ERES MIENTRAS LEES ESTO
 ------------------------------------------------------------------------------
+Eres un diseñador-desarrollador de producto que ha hecho páginas para marcas de
+barbería, whisky y ropa de trabajo: sabes que este público huele el stock photo a
+un kilómetro. Escribes HTML, CSS y JavaScript a mano, en un solo archivo, y no
+entregas nada que no defenderías ante un director de arte.
 
-Actuas como disenador-desarrollador senior especializado en paginas de captacion para
-servicios de salud mental. Has trabajado con consultas privadas y sabes dos cosas que un
-generalista no sabe:
+El estándar es este: si un hombre de 29 años abre la página en el metro, a media
+luz, con una mano, tiene que entender en 5 segundos qué se le ofrece, sentir que
+ese lugar tiene carácter, y poder pulsar "Reservar mi silla" sin buscarlo. Una
+página bonita que no consigue la reserva es un fracaso. Una página que consigue la
+reserva pero parece una plantilla de agencia también.
 
-  a) Quien llega a esta pagina no esta comparando features. Esta reuniendo el valor para
-     pedir ayuda por primera vez, y cualquier friccion visual o promesa exagerada le da
-     la excusa perfecta para cerrar la pestana y dejarlo "para enero".
-  b) La salud mental se comunica con sobriedad. Una pagina que parece una startup de
-     productividad, o que vende felicidad con stock photos de gente saltando en un campo,
-     destruye la credibilidad clinica en tres segundos.
-
-El estandar es este: la pagina tiene que parecer encargada a un estudio de diseno
-editorial por una psicologa que cuida su reputacion. Nada de plantilla SaaS. Si al
-terminar la pagina podria servir, cambiando cuatro palabras, para una app de finanzas o
-un gimnasio, has fallado y tienes que rehacerla.
-
-Entregas un unico archivo HTML autonomo, terminado, con contenido real escrito por ti
-(no lorem ipsum, no placeholders de texto). Nada de "aqui iria el testimonio".
+Entregas UN solo archivo .html funcional, que se abre terminado, con imágenes ya
+visibles. No hay segunda ronda.
 
 ------------------------------------------------------------------------------
-2. EL ENCARGO
+2. EL NEGOCIO Y A QUIÉN LE HABLAS
 ------------------------------------------------------------------------------
+Es una barbería de autor en Ciudad de México. No es una cadena de centro
+comercial: hay un barbero con nombre, una silla, y una forma concreta de trabajar.
 
-La clienta es una psicologa con consulta 100% en linea. Atiende adultos en terapia
-cognitivo-conductual por videollamada. Su diferencia real frente a la consulta de barrio
-son tres cosas concretas, y las tres tienen que quedar claras antes del primer scroll:
+Lo que vende: corte y arreglo de barba con técnica artesanal —tijera y navaja, no
+solo máquina—, productos sin sulfatos, y música en vivo los viernes. Y una promesa
+operativa muy concreta: reservar tu silla toma menos de 2 minutos.
 
-  1. Sesiones por videollamada, desde casa, sin sala de espera y sin cruzarse con nadie.
-  2. Agenda con franjas nocturnas: hay horas a las 21:00 y a las 22:00 en dias de semana,
-     pensadas para quien sale de trabajar tarde o no quiere pedir permiso para ir a
-     terapia.
-  3. La primera sesion es de valoracion y no se cobra. Sirve para contar que pasa, oir un
-     plan y decidir. No hay compromiso de continuar ni paquetes que haya que contratar.
+A quién: hombres de 22 a 40 años que cuidan su imagen y ya gastan dinero en ella.
+No son novatos. Tres cosas los mueven y tienes que tocarlas todas:
+  · Odian esperar. Han perdido sábados enteros sentados en una banca viendo cómo
+    "ya va el que sigue" no significa nada.
+  · Odian explicar su corte tres veces y salir con otro distinto. El miedo real no
+    es el precio: es salir peor de lo que entraste y tener que aguantarlo tres
+    semanas en la oficina.
+  · Quieren que la media hora valga por sí misma. Buscan un rato para ellos, no un
+    trámite de 15 minutos con la tele puesta.
 
-A QUIEN LE HABLAS
+Tono: oscuro, masculino, con carácter. Seco, no gritón. Ni "caballero", ni
+"experiencia premium", ni emojis. Frases cortas como cortes de navaja.
 
-Adultos de 25 a 40 anos que llevan meses —a veces anos— funcionando con ansiedad de
-fondo o con una sensacion de bloqueo: duermen mal, aplazan decisiones, se les acelera el
-pecho antes de una reunion, han empezado a decir "no" a planes. No estan en crisis
-aguda; estan cansados. Ya han pensado en ir a terapia varias veces y no han dado el
-paso, y el motivo casi nunca es el dinero: es la pereza de buscar, la incomodidad de
-contarle su vida a un desconocido en una sala con la puerta cerrada, el miedo a que se
-les considere un caso grave, y una verguenza sorda por no poder resolverlo solos ("otros
-tienen problemas de verdad").
-
-Escribe para esa persona leyendo el movil a las 23:40 de un martes, con la pareja
-dormida al lado. Ese es el contexto real de lectura y condiciona todo: frases cortas,
-nada que grite, un solo paso siguiente muy claro.
-
-ACCION PRINCIPAL
-
-Reservar la valoracion gratuita. Es el unico objetivo de conversion de la pagina. No hay
-newsletter, no hay descarga de ebook, no hay "descubre mas". Todo empuja al mismo sitio.
-
-TONO
-
-Calido, honesto y llano. Cero jerga clinica en los titulares: no escribas "abordaje
-psicoterapeutico", "reestructuracion cognitiva", "sintomatologia ansiosa" ni "salud
-mental integral" en ningun titular ni boton. Los terminos tecnicos, si aparecen, van una
-sola vez y explicados de inmediato en lenguaje de calle. Honesto tambien significa no
-prometer resultados: la terapia no "elimina la ansiedad en 6 semanas", y decirlo asi te
-delata como IA que no entiende el sector.
+Acción principal, siempre con estas palabras exactas en el botón principal:
+"Reservar mi silla".
 
 ------------------------------------------------------------------------------
-3. ARQUETIPO DE COMPOSICION: REJILLA MODULAR (obligatorio)
+3. ARQUETIPO DE COMPOSICIÓN — HERO TIPOGRÁFICO (OBLIGATORIO)
 ------------------------------------------------------------------------------
+La primera pantalla NO lleva fotografía ni vídeo de fondo. El titular, a escala
+enorme, ES la imagen. La primera foto aparece después, cuando el usuario ya ha
+hecho scroll.
 
-Construye la pagina como un mosaico de bloques de distintos tamanos, con una pieza
-dominante por pantalla y piezas satelite mas pequenas a su alrededor.
+Por qué este arquetipo y no otro: cualquier barbería del mundo abre con la misma
+foto de tijeras sobre madera; arrancar con pura tipografía condensada sobre negro
+mate es lo que este público lee como marca con actitud, y además carga instantáneo
+en datos móviles, que es donde va a abrirse esta página. El zigzag narrativo queda
+descartado a propósito: obliga a alternar foto-texto seis veces y aquí la fuerza
+está en la palabra, no en el inventario de fotos.
 
-POR QUE ESTE Y NO OTRO: esta persona no lee, escanea con miedo. Un mosaico le deja
-encontrar de un vistazo la unica pieza que le desbloquea —"cuanto cuesta", "hay hora a
-las 22:00", "que pasa si me quedo en blanco"— sin obligarla a leer un discurso lineal
-que la haria abandonar antes de llegar al dato. Descarto expresamente el zigzag
-narrativo: impone un ritmo de lectura secuencial y aqui el lector necesita elegir por
-donde entra.
-
-REGLAS VERIFICABLES DE LA REJILLA:
-
-  - Base de 12 columnas en escritorio. En movil, una sola columna: el mosaico se apila y
-    la pieza dominante de cada seccion va siempre primera.
-  - Cada seccion tiene exactamente una pieza dominante que ocupa entre 7 y 12 columnas y
-    es visiblemente mas grande que sus satelites. Prohibido que dos bloques de la misma
-    seccion tengan el mismo peso visual: si empatan, agranda uno o reduce el otro.
-  - Usa tres tamanos de modulo y solo tres: grande (7-12 col), medio (4-6 col), pequeno
-    (3-4 col). Nada intermedio.
-  - Canal entre modulos constante de 20px en movil y 28px en escritorio. No lo varies por
-    seccion.
-  - Al menos dos modulos de toda la pagina deben ser "vacios utiles": un modulo que solo
-    contiene una frase corta con mucho aire alrededor, sin icono ni borde. El vacio forma
-    parte de la rejilla, no es un hueco por rellenar.
-  - Prohibido el carrusel, el acordeon decorativo y las tarjetas de altura desigual que
-    dejan dientes de sierra al final de una fila.
+Reglas verificables del hero:
+  · Alto: 100svh (usa svh, no vh, para no romper en Safari móvil).
+  · Fondo: negro mate plano #0B0B0A. Nada más. Cero degradados, cero imagen.
+  · El h1 ocupa como mínimo el 45% del alto del hero en móvil. Tamaño con
+    clamp(3.4rem, 13vw, 11rem), line-height entre 0.82 y 0.88, mayúsculas,
+    letter-spacing -0.02em. Debe romper en 3 o 4 líneas y una de esas líneas va en
+    verde botella o con la firma de navaja (ver §6).
+  · Sobre el h1, una sola línea de etiqueta en 11px, mayúsculas, tracking 0.22em,
+    en cuero whisky: la colonia y el año de apertura.
+  · Debajo del h1: máximo 22 palabras de subtítulo en serif, y los dos botones.
+  · Una franja inferior fija dentro del hero con tres datos separados por la firma
+    de navaja: tiempo de reserva, técnica, viernes en vivo. Texto corto, sin verbos.
+  · PROHIBIDO en el hero: imagen de fondo, vídeo de fondo, overlay oscuro sobre
+    foto, partículas, blobs, degradado morado-azul, tarjeta de cristal.
 
 ------------------------------------------------------------------------------
-4. DIRECCION TIPOGRAFICA: SANS GEOMETRICA (obligatorio)
+4. DIRECCIÓN TIPOGRÁFICA — CONDENSADA DE CARTEL (OBLIGATORIO)
 ------------------------------------------------------------------------------
+Titulares en sans condensada muy pesada y en MAYÚSCULAS. Cuerpo en serif, que es
+lo que da el contraste de cartel de boxeo que buscamos.
 
-Toda la pagina en una sola familia sans de formas limpias y geometricas, con la jerarquia
-construida solo con peso y tamano. Encaja con el tono porque una serif editorial daria
-un aire institucional y de "informe clinico" que es justo lo que este publico teme, y una
-condensada de cartel gritaria.
+Sin dependencias externas, así que resuélvelo con pilas nativas:
+  --tipo-titulo: 'Oswald', 'Archivo Narrow', 'Haettenschweiler',
+                 'Franklin Gothic Condensed', 'Arial Narrow', sans-serif;
+  --tipo-cuerpo: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --tipo-dato:   ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
 
-  - Pila de fuentes del sistema, sin dependencias externas ni Google Fonts: primero
-    "Inter", luego "Segoe UI", luego "Helvetica Neue", luego Arial, luego sans-serif.
-  - Solo tres pesos en toda la pagina: 400 para cuerpo, 500 para etiquetas y botones,
-    700 para titulares. Nada de 300 (ilegible en crema) ni de 800/900.
-  - Escala fluida: h1 entre 34px en movil y 62px en escritorio; h2 entre 25px y 38px;
-    cuerpo 17px en movil y 18px en escritorio; nunca por debajo de 15px, ni en notas
-    legales ni en pies de foto.
-  - Interlineado 1.15 en titulares, 1.6 en cuerpo. Medida de lectura maxima de 66
-    caracteres por linea en cualquier bloque de texto corrido.
-  - Cero mayusculas sostenidas en titulares. Se permiten solo en etiquetas de una o dos
-    palabras (por ejemplo la etiqueta de una seccion), con 0.08em de espaciado entre
-    letras.
-  - Cero cursiva decorativa y cero subrayado salvo en enlaces de texto.
-
-------------------------------------------------------------------------------
-5. PALETA Y FIRMA VISUAL (valores exactos, no interpretables)
-------------------------------------------------------------------------------
-
-  #F7F2EA  crema — fondo dominante de la pagina
-  #EFE6D9  crema hueso — fondo de modulos y de secciones alternas
-  #2E2A26  tinta tierra — texto principal (contraste sobre crema > 12:1)
-  #6B6157  tinta suave — texto secundario y pies de foto
-  #7A4030  tierra profunda — fondo de los botones principales, texto en #F7F2EA
-  #A4614A  terracota — bordes, subrayados gruesos, estados hover
-  #C9BEDD  lavanda suave — solo como relleno de acento y fondo del arco decorativo
-  #574a73  lavanda profunda — enlaces de texto y etiquetas de seccion
-  #8F9E8B  salvia — un unico uso en toda la pagina: el indicador de plazas nocturnas
-
-Prohibido introducir cualquier otro color, incluido el blanco puro #FFFFFF: si necesitas
-un plano mas claro, usa #FDFBF7. Prohibidos los degradados de dos tintas saturadas, el
-morado-a-cian, el glassmorphism, las sombras azuladas y los brillos de neon. Sombras
-permitidas: una sola, muy baja y calida, del tipo desplazamiento vertical de 2px, difusion
-de 12px, negro al 6%. Nada mas.
-
-FIRMA GRAFICA REPETIDA — "EL ARCO DE VENTANA":
-
-Una forma de ventana con la parte superior redondeada: esquinas superiores con radio de
-96px (56px en movil) y esquinas inferiores con radio de 10px. Es el motivo que cose toda
-la pagina y alude a la ventana iluminada de casa a la que se conecta la sesion nocturna.
-
-  - Todas las fotografias van recortadas con esa forma de arco, sin excepcion.
-  - La pieza dominante del hero lleva un arco de #C9BEDD desplazado 12px abajo y 12px a
-    la derecha detras de la foto, visible como un borde de color.
-  - Cada etiqueta de seccion va precedida de un pequeno arco macizo de 14x18px en
-    #A4614A.
-  - Los botones son pastilla completa (radio 999px): el arco es para imagenes y modulos,
-    la pastilla para acciones. No los mezcles.
-  - Aparece minimo 6 veces y maximo 12 en toda la pagina. Contarlas es parte del
-    checklist.
+Aplicación verificable:
+  · h1, h2, h3 y los botones: --tipo-titulo, font-weight 700+, text-transform
+    uppercase, font-stretch condensed donde exista.
+  · Todo párrafo: --tipo-cuerpo, tamaño 17–19px, line-height 1.6, medida máxima
+    62ch.
+  · Precios, duraciones y numeración de secciones: --tipo-dato, con cifras
+    tabulares (font-variant-numeric: tabular-nums).
+  · Jerarquía por escala, no por color: h2 en clamp(2.2rem, 7vw, 4.6rem).
+  · Ninguna tipografía cursiva decorativa. Nada de script. Nada de fuentes
+    "handwritten barber".
 
 ------------------------------------------------------------------------------
-6. ARQUITECTURA DE SECCIONES (este orden, siete secciones)
+5. PALETA — VALORES EXACTOS, NO APROXIMADOS
 ------------------------------------------------------------------------------
+  --negro-mate:    #0B0B0A   fondo base de toda la página
+  --carbon:        #151513   superficies elevadas, tarjetas, acordeón
+  --verde-botella: #1E4034   bloques de sección, fondo del cierre de reserva
+  --verde-claro:   #2F6350   solo para bordes y estados hover sobre verde
+  --cuero-whisky:  #A96A2C   firma visual, etiquetas, subrayados, foco
+  --whisky-alto:   #C98B45   hover del botón principal y enlaces sobre negro
+  --hueso:         #E8E2D6   texto principal
+  --ceniza:        #8F897C   texto secundario, nunca para texto de menos de 16px
+                             sobre negro salvo que verifiques el contraste
 
-1. PORTADA MODULAR
-   Proposito: que en la primera pantalla sepa que puede empezar esta semana, de noche,
-   sin pagar la primera sesion. Pieza dominante: bloque de texto con el unico h1 de la
-   pagina y el boton principal. Satelites: una foto en arco (interior domestico calido
-   de noche), un modulo pequeno con la franja horaria disponible mas proxima, y un
-   modulo pequeno con el dato de la valoracion sin coste. Sin menu de navegacion largo:
-   como maximo un logotipo de texto y un enlace ancla al formulario.
+Reglas: el fondo dominante es --negro-mate; --verde-botella aparece en 2 secciones
+como máximo, en bloques a sangre completa; --cuero-whisky es acento y jamás llena
+un área grande. Ningún degradado de más de dos paradas, y ningún degradado entre
+tonos distintos: solo se permite oscurecer un mismo color (por ejemplo #151513 →
+#0B0B0A) y solo para fundir el borde inferior de una imagen.
 
-2. "PUEDE QUE TE SUENE"
-   Proposito: reconocimiento antes que argumento. Cuatro modulos medianos con frases en
-   primera persona que describen sintomas cotidianos reconocibles (dormir mal, aplazar,
-   cancelar planes, la sensacion de estar funcionando en automatico), escritas sin
-   dramatismo y sin diagnosticar. Cierra con un modulo de vacio util: una linea que diga,
-   con otras palabras, que llevar meses asi no lo convierte en algo menor.
-
-3. "LA PRIMERA SESION, MINUTO A MINUTO"
-   Proposito: desactivar el miedo numero uno, que es no saber que va a pasar. Pieza
-   dominante: una secuencia de cuatro momentos de los 50 minutos de la valoracion (como
-   se entra, que se pregunta al principio, en que consiste el plan que se propone, como
-   se decide si seguir). Satelite: un modulo con lo que NO va a pasar en esa sesion.
-   Esta seccion es la mas importante de la pagina: dale el mayor peso visual.
-
-4. "COMO FUNCIONA ESTO, SIN TECNICISMOS"
-   Proposito: explicar la terapia cognitivo-conductual en lenguaje llano y justificar por
-   que es el enfoque, no relleno educativo. Pieza dominante: la explicacion en tres o
-   cuatro frases de la idea central (trabajar sobre lo que uno piensa y hace en
-   situaciones concretas, con tareas entre sesiones). Satelites: dos modulos con un
-   ejemplo concreto de ejercicio entre sesiones.
-
-5. "QUIEN TE VA A ESCUCHAR"
-   Proposito: la confianza aqui no es de marca, es de persona. Pieza dominante: retrato
-   en arco. Satelites: numero de colegiacion, formacion en TCC, anos de consulta, idiomas,
-   y una frase corta en primera persona sobre como trabaja. Nada de logotipos de
-   universidades ni medallas.
-
-6. "HORARIOS, PRECIO Y DUDAS INCOMODAS"
-   Proposito: quitar las dos ultimas excusas, dinero y logistica, y responder lo que no
-   se atreve a preguntar. Pieza dominante: las franjas nocturnas reales y la tarifa de
-   las sesiones siguientes en euros, dicha sin rodeos, junto con que no hay paquetes ni
-   permanencia. Satelites: cuatro preguntas escritas como las diria el lector —quedarme
-   en blanco, si esto lleva a medicacion, privacidad de la videollamada, si por pantalla
-   funciona igual que en persona— con respuestas de dos o tres frases.
-
-7. RESERVA
-   Proposito: cerrar. Formulario de cuatro campos como maximo: nombre, correo, telefono
-   opcional y un selector de franja horaria preferida. Una linea sobre confidencialidad
-   junto al boton. Repite ahi que la valoracion no se cobra, porque es lo ultimo que lee
-   antes de pulsar.
-
-DECISION SOBRE PRUEBA SOCIAL: no hay seccion de testimonios con nombre y foto, y esto es
-deliberado, no un olvido. Publicar testimonios de pacientes es eticamente problematico y
-en varios paises esta restringido para profesionales sanitarios; ademas, este publico
-desconfia de la resena entusiasta. La sustituyes por dos piezas verificables: el numero
-de procesos acompanados y de anos de consulta en la seccion 5, y dentro de la seccion 6
-un modulo con dos frases anonimas y sobrias del tipo "lo que mas repiten al final de la
-primera sesion", sin nombre, sin inicial, sin foto y sin estrellas.
+FIRMA VISUAL REPETIDA — "el corte de navaja":
+Un filete de 2px en --cuero-whisky de 64px de largo que termina cortado en
+diagonal a 45° (consíguelo con un pseudo-elemento y clip-path, sin SVG externo).
+Aparece exactamente en cuatro sitios y en ninguno más:
+  1. Encima de cada h2 de sección.
+  2. Como separador entre los datos de la franja del hero.
+  3. Como subrayado que crece de 0 a 100% al hacer hover o focus en un enlace.
+  4. Como esquina recortada: TODAS las imágenes llevan
+     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%);
+     Cero border-radius en imágenes. Botones con radio máximo 2px. Nada redondeado.
 
 ------------------------------------------------------------------------------
-7. DIRECTIVAS DE TECNICA
+6. ARQUITECTURA DE SECCIONES — ESTE ORDEN, ESTE PROPÓSITO
 ------------------------------------------------------------------------------
+Siete secciones visibles más el hueco reservado de vídeo. Numera cada h2 con un
+marcador en --tipo-dato ("01 —", "02 —"…).
 
-7.1 CADENAS SEMILLA — direccion de arte con identidad propia
-La cadena de estilo que gobierna toda decision estetica es esta, y resuelvela literalmente:
-"ventana iluminada a las diez de la noche · papel de carta color crema · terracota
-desgastada · lavanda de tarde · nada de clinica". Traduccion obligatoria: luz siempre
-calida y lateral, jamas luz fria de fluorescente; texturas de papel y ceramica, nunca
-cristal ni metal; formas de arco, nunca rectangulos de esquina viva. Prohibido de forma
-explicita: cerebros, cabezas de perfil con engranajes, divanes, bombillas, mariposas,
-puzzles, siluetas meditando en loto, plantas monstera como unico atrezzo y cualquier
-icono de cerebro en cualquier tamano.
+HERO — Captar en 5 segundos con pura tipografía y prometer la reserva de 2 minutos.
+  Sin foto. Ver §3.
 
-7.2 PROMPTS AMBICIOSOS — psicologia del lector, resuelta en la pagina
-Antes de escribir, anota internamente estos cinco frenos y asigna a cada uno un lugar
-concreto de la pagina donde queda respondido. Ninguno puede quedar sin sitio:
-   F1 "no se que va a pasar y me da vertigo" → seccion 3, minuto a minuto.
-   F2 "mi problema no es tan grave, estoy ocupando el sitio de alguien peor" → cierre de
-      la seccion 2, validando sin exagerar.
-   F3 "no puedo ir a una consulta sin que en casa o en el trabajo se enteren" → portada
-      y seccion 6, franjas nocturnas desde casa.
-   F4 "y si no conecto con ella y ya he pagado" → portada y seccion 7, valoracion sin
-      coste y sin compromiso de continuar.
-   F5 "por videollamada no puede ser lo mismo" → pregunta explicita en la seccion 6,
-      respondida sin defensividad.
-Ademas, un limite etico que es tambien de eficacia: cero urgencia artificial. Nada de
-contadores, "quedan 2 plazas hoy" ni descuentos que expiran. El unico dato de escasez
-permitido es real y neutro: cuantas franjas nocturnas quedan libres esta semana.
+[HUECO DE VÍDEO DEL PRESENTADOR] — Inmediatamente después del hero. Ver §9.
 
-7.3 COPY HUMANO — microcopy de cada accion
-Ningun boton dice "Enviar", "Reservar ahora", "Empezar", "Saber mas", "Contactar" ni
-"Agenda tu cita". Cada uno se escribe en primera persona del lector y nombra lo que
-ocurre al pulsar, en cuatro a siete palabras, del tipo "Quiero la primera sesion" o "Ver
-las horas de noche". Bajo cada boton principal va una linea de apoyo de menos de doce
-palabras que retira el riesgo (que no se cobra, que se puede cambiar la hora, cuanto se
-tarda en responder). Los titulares de seccion se leen como algo que diria una persona en
-voz baja, no como un titulo de indice. Longitud maxima de parrafo: cuatro lineas en
-escritorio.
+01 · LA TÉCNICA — Matar la duda "¿saben lo que hacen?".
+  Primera fotografía de la página, grande, a sangre por un lado. Explica en tres
+  pasos numerados qué pasa con la navaja, la tijera y la barba. Cada paso: un
+  título de 3 palabras y una frase de 18 palabras máximo. Aquí va el dato de los
+  productos sin sulfatos como consecuencia técnica, no como eslogan: qué le pasa a
+  su pelo y a su piel cuando no hay sulfatos.
 
-7.4 RESTRICCIONES NEGATIVAS — lista de prohibiciones
-Prohibidas estas palabras y familias completas: "transforma tu vida", "desbloquea tu
-potencial", "bienestar 360", "viaje de autoconocimiento", "revoluciona", "empodera",
-"holistico", "la mejor version de ti mismo", "sanar tu nino interior", "libre de ansiedad
-para siempre", "solucion definitiva". Prohibido usar "simplemente" y "solo" para
-minimizar el esfuerzo de pedir ayuda. Prohibido el titular de tres palabras con punto
-entre cada una. Prohibidos los emoji. Prohibido prometer plazos o resultados garantizados.
-Prohibidas las cifras inventadas con aire de estudio: si citas un dato de eficacia de la
-TCC, formulalo como afirmacion cualitativa y no como porcentaje falso.
+02 · CERO ESPERA — Atacar el dolor principal: perder la tarde.
+  Bloque en --verde-botella a sangre completa. Explica el sistema: hora asignada,
+  una silla por franja, se entra a la hora reservada. Incluye una cifra honesta y
+  concreta (minutos de holgura entre citas) y una línea sobre qué pasa si llegan
+  tarde. Sin foto: aquí manda el texto y un contador tipográfico grande.
 
-7.5 MOVIMIENTO CON PROPOSITO
-Solo tres animaciones en toda la pagina, y cada una tiene que justificar su existencia
-dirigiendo la mirada:
-   M1 Entrada de los modulos al aparecer en pantalla: opacidad de 0 a 1 y 14px de
-      desplazamiento vertical, 420ms, curva suave de salida, con 70ms de retardo
-      encadenado entre modulos de la misma fila para que el ojo lea primero la pieza
-      dominante.
-   M2 Estado activo de los botones: el fondo pasa de tierra profunda a terracota en
-      180ms y el boton se eleva 1px. Nada de escalados ni de rebotes.
-   M3 En la seccion 3, el paso activo de la secuencia de la primera sesion se marca con
-      un subrayado de 3px en terracota que crece de izquierda a derecha en 260ms al
-      entrar en foco o al pasar el cursor.
-Nada de parallax, nada de scrollytelling, nada de contadores animados, nada que se mueva
-en bucle. Respeta prefers-reduced-motion desactivando M1 y M3 por completo. Ninguna
-animacion puede provocar desplazamiento de contenido ya leido.
+03 · LA CARTA — Dar el precio sin que tengan que preguntarlo.
+  Lista de 4 servicios: corte, arreglo de barba, corte + barba, y afeitado clásico
+  a navaja. Cada línea con duración y precio en pesos, alineados a la derecha con
+  cifras tabulares. NO se elimina esta sección: este público abandona la página si
+  no ve precio, y ocultarlo es la señal número uno de que va a salir caro.
 
-7.6 DISENO SUSTRACTIVO
-Escribe primero la pagina completa y despues haz una pasada de recorte obligatoria en la
-que elimines alrededor del 30% de los elementos decorativos y del texto. Criterios de
-poda, en este orden: fuera los iconos que solo repiten en dibujo lo que ya dice el
-titular; fuera todo adjetivo que no aporte informacion comprobable; fuera cualquier
-parrafo que repita una idea ya dicha en otra seccion; fuera los bordes cuando el cambio
-de fondo ya separa los bloques; fuera las etiquetas de seccion redundantes. Objetivo
-medible: como maximo 4 iconos en toda la pagina, ningun bloque de texto de mas de 70
-palabras, y como maximo 7 botones o enlaces de accion en total contando el formulario.
+04 · VIERNES EN VIVO — Convertir el diferenciador en motivo de visita.
+  Rejilla de dos imágenes con una frase corta. Qué suena, a qué hora, y que la
+  silla de viernes se agota primero. Es escasez real, no cuenta atrás falsa.
 
-7.7 ACTIVOS DE IMAGEN
-Toda imagen se muestra con una direccion https://picsum.photos/seed/PALABRA/ANCHO/ALTO,
-con PALABRA en ingles y descriptiva de esa foto concreta, ancho y alto reales en pixeles
-declarados tambien como atributos de la imagen, y texto alternativo escrito para alguien
-que no ve la foto. Usa estas semillas: "warmlamp" para el interior nocturno de la
-portada, "windowrain" para la pieza de la seccion 2, "teacup" para la seccion 3,
-"notebook" para el ejemplo de ejercicio de la seccion 4, "therapist" para el retrato de
-la seccion 5 y "blanket" para el cierre. Todas las imagenes en carga diferida salvo la
-de la portada.
-Ademas, al final de tu entrega y fuera del HTML, incluye un bloque con seis prompts
-listos para Midjourney o DALL-E, uno por cada imagen anterior, redactados en ingles y
-con estos cuatro datos explicitos en cada uno: encuadre y distancia, direccion y
-temperatura de la luz, paleta ligada a crema/terracota/lavanda, y relacion de aspecto.
-Ejemplo de nivel exigido para la portada: plano medio del rincon de un salon a las 22:00,
-lampara de mesa fuera de cuadro entrando por la izquierda a unos 2700K, un portatil
-cerrado y una manta de lana, sin personas, textiles color crema y terracota, grano fino
-de pelicula, 3:2. Cada prompt lleva su propia linea de exclusiones negativas coherente
-con el punto 7.1.
+05 · LOS QUE YA SE SIENTAN — Prueba social específica, no genérica.
+  Tres testimonios de 25–35 palabras, cada uno con nombre, edad, oficio y el corte
+  que se hizo. Cada testimonio debe resolver una objeción distinta: el miedo a
+  salir peor, la espera, y el precio. Si un testimonio podría estar en la web de un
+  dentista, reescríbelo.
 
-7.8 ACTIVOS DE VIDEO
-Al final de la entrega, tambien fuera del HTML, propon dos clips alternativos para la
-pieza dominante de la portada, escritos para Runway, Luma o Sora, de 6 a 8 segundos,
-pensados para reproducirse en bucle, sin audio, sin personas identificables y sin cortes.
-Cada uno especifica: sujeto, un unico movimiento de camara muy lento (por ejemplo empuje
-de 5% o panoramica lateral minima), la accion dentro del plano (una cortina que se mueve
-apenas, vapor de una taza, la luz de la lampara ganando intensidad al anochecer),
-iluminacion calida de interior, paleta de la pagina y relacion de aspecto 16:9 y 4:5.
-Indica tambien el punto de bucle y el peso maximo objetivo. En el HTML, el video no se
-implementa: deja la imagen de portada en su sitio y anade un comentario en el codigo
-indicando donde iria el video, con que imagen de poster y con que atributos de
-reproduccion silenciada, en bucle y desactivada bajo prefers-reduced-motion.
+06 · DUDAS DE BARBERÍA — Quitar la última excusa antes de reservar.
+  Acordeón de 5 preguntas con <details>/<summary>. Obligatorias: qué pasa si no
+  sé explicar el corte que quiero; puedo cancelar o mover la cita; aceptan tarjeta;
+  cuánto tardan de verdad; puedo ir sin cita. Respuestas de 2 frases.
 
-7.9 CREADOR Y CRITICO
-Antes de darme el codigo, hazte una auditoria en dos roles. Como CRITICO UX/CRO, revisa la
-pagina contra estos ocho puntos y anota para cada uno "cumple" o el arreglo que aplicas:
-   1. En la primera pantalla se ven, sin scroll, la videollamada, la franja nocturna y la
-      valoracion sin coste.
-   2. Los cinco frenos F1 a F5 tienen un lugar identificable en la pagina.
-   3. Cada seccion tiene una sola pieza dominante y no hay empates de peso visual.
-   4. Ningun boton usa verbos genericos y todos los principales llevan linea de apoyo.
-   5. Ninguna palabra de la lista negra del punto 7.4 aparece en la pagina.
-   6. La pasada sustractiva se hizo de verdad: iconos, palabras por bloque y numero de
-      acciones estan dentro de los limites.
-   7. Contraste AA verificado en los pares criticos: crema sobre tierra profunda en los
-      botones, tinta suave sobre crema hueso, lavanda profunda sobre crema.
-   8. En 360px de ancho no hay desbordamiento horizontal ni texto por debajo de 15px.
-Corrige lo que falle y entrega ya corregido. Al final incluye la tabla de esa auditoria
-con los ocho puntos y su resultado, mas las tres decisiones que estuviste a punto de
-tomar y descartaste, con el motivo en una linea cada una.
+07 · RESERVAR MI SILLA — Cerrar.
+  Fondo --verde-botella. Formulario corto de verdad: nombre, WhatsApp, servicio
+  (select con los 4 de la carta), y día preferido. Cuatro campos, ni uno más. Bajo
+  el botón, una línea que repita la promesa de los 2 minutos y el aviso de que
+  confirman por WhatsApp. Dirección, colonia y horario en el pie, en --tipo-dato.
+
+Se elimina a propósito: la sección "sobre nosotros" con la historia de la marca
+(a este público le da igual el año de fundación antes de saber el precio), la
+galería de 12 fotos (redundante con 01 y 04) y el bloque de logos de marcas de
+producto (es publicidad de otros, no argumento de compra).
 
 ------------------------------------------------------------------------------
-8. REQUISITOS TECNICOS
+7. COPY — LO QUE ESTÁ PROHIBIDO Y LO QUE SE ESPERA
 ------------------------------------------------------------------------------
+LISTA NEGRA. Si alguna de estas cadenas aparece en tu entrega, has fallado:
+"bienvenido", "descubre", "transforma tu look", "eleva tu estilo", "somos
+apasionados", "la mejor experiencia", "calidad premium", "tu mejor versión",
+"no es solo un corte, es un estilo de vida", "caballero", "tradición y
+modernidad se unen", "déjate consentir", "excelencia", "soluciones", "en el
+corazón de la ciudad", "más que una barbería", cualquier frase con "unimos lo
+mejor de", cualquier signo de exclamación, cualquier emoji.
 
-  - Un solo archivo .html, con el CSS en una etiqueta de estilo en la cabecera y el JS
-    minimo en una etiqueta de script al final del cuerpo. Sin frameworks, sin CDN, sin
-    fuentes externas, sin librerias de iconos: si hace falta un icono, va dibujado en SVG
-    en linea.
-  - HTML semantico: cabecera, main, secciones con su encabezado, pie. Un unico h1 en toda
-    la pagina, en la portada. Jerarquia de encabezados sin saltos. El formulario con
-    etiquetas asociadas a cada campo y no solo con texto de relleno dentro del campo.
-  - Mobile-first: escribe los estilos base para 360px y sube con consultas de medios en
-    720px y 1080px. Comprueba que el mosaico se apila en el orden correcto.
-  - Accesibilidad: contraste minimo AA en todo texto, foco visible propio y no suprimido
-    en todos los elementos interactivos con un contorno de 2px en lavanda profunda y 2px
-    de separacion, area tactil minima de 44px, region del formulario anunciada
-    correctamente y mensajes de error de validacion en texto y no solo en color.
-  - Cada imagen con sus atributos de ancho y alto explicitos para que no salte el layout,
-    y texto alternativo real.
-  - Idioma del documento en espanol, titulo y meta descripcion escritos para este
-    servicio, e informacion de la consulta marcada con datos estructurados.
-  - El JS se limita a: la animacion de entrada de modulos mediante observador de
-    interseccion respetando prefers-reduced-motion, el subrayado del paso activo de la
-    seccion 3, el desplazamiento suave de los anclas hacia el formulario, y la validacion
-    del formulario en el cliente con mensaje de exito simulado. Nada mas.
+LO QUE SÍ: frases de 6 a 12 palabras, verbos concretos, sustantivos físicos
+(navaja, toalla, cuello, espejo, tijera, cuero, hora). Habla en segunda persona.
+Se permite el humor seco, nunca la broma.
 
-------------------------------------------------------------------------------
-9. FORMATO DE SALIDA
-------------------------------------------------------------------------------
-
-Entrega, en este orden y sin preambulos:
-  A) El archivo HTML completo, en un unico bloque de codigo, funcionando tal cual al
-     abrirlo en un navegador.
-  B) Bloque "PROMPTS DE IMAGEN": los seis prompts del punto 7.7.
-  C) Bloque "PROMPTS DE VIDEO": los dos clips del punto 7.8.
-  D) Bloque "AUDITORIA": la tabla de ocho puntos y las tres decisiones descartadas.
-Sin explicaciones de como lo hiciste, sin resumen de la estructura, sin ofertas de
-cambios.
+MICRO-COPY DE BOTONES Y CAMPOS. Cada botón dice qué pasa al pulsarlo, y ninguno
+dice "Enviar" ni "Click aquí":
+  · Principal (hero y cierre): "Reservar mi silla"
+  · Secundario del hero: "Ver la carta y precios"
+  · Botón del formulario: "Apartar esta silla"
+  · Bajo ese botón: "Te confirmamos por WhatsApp en menos de una hora."
+  · Placeholder de WhatsApp: "55 0000 0000 — solo para confirmarte"
+  · Ayuda del select: "Si no sabes cuál, elige corte + barba y lo ajustamos en la silla."
+  · Estado de envío: el botón pasa a "Apartando…" y luego a "Silla apartada".
+  · Mensaje de error de un campo, en tono de la marca: "Nos falta tu WhatsApp para
+    confirmarte la hora."
 
 ------------------------------------------------------------------------------
-10. CHECKLIST FINAL (repasalo antes de responder)
+8. IMÁGENES — GENERADAS POR IA DESDE LA URL, SIN EXCEPCIÓN
 ------------------------------------------------------------------------------
+Todas las imágenes se piden a Pollinations directamente en el src, con este
+formato, para que la página se abra ya terminada:
 
-  [ ] Un solo h1, en la portada.
-  [ ] Siete secciones, en el orden del punto 6, cada una con su pieza dominante.
-  [ ] Portada con videollamada, franja nocturna y valoracion sin coste visibles sin scroll.
-  [ ] Colores exclusivamente de la lista del punto 5, sin blanco puro ni degradados.
-  [ ] El arco de ventana aparece entre 6 y 12 veces; todas las fotos van recortadas con el.
-  [ ] Una sola familia sans y solo los pesos 400, 500 y 700.
-  [ ] Cero terminos clinicos en titulares y botones; cero palabras de la lista negra.
-  [ ] Botones en primera persona, con linea de apoyo bajo los principales.
-  [ ] Maximo 4 iconos, maximo 7 acciones, ningun bloque de mas de 70 palabras.
-  [ ] Solo las animaciones M1, M2 y M3, todas anuladas con prefers-reduced-motion.
-  [ ] Sin urgencia artificial, sin contadores, sin promesas de resultado.
-  [ ] Las seis imagenes usan las semillas indicadas de picsum con ancho y alto explicitos.
-  [ ] Sin testimonios con nombre o foto; prueba social sustituida como indica el punto 6.
-  [ ] Contraste AA y foco visible comprobados; sin desbordamiento a 360px.
-  [ ] Un unico archivo, sin dependencias externas de ningun tipo.
-  [ ] Incluidos los bloques B, C y D del punto 9.
+  https://image.pollinations.ai/prompt/TEXTO?width=ANCHO&height=ALTO&seed=NUMERO&nologo=true
 
-DECISIONES: arquetipo=rejilla modular · tipografia=sans geometrica · semilla=5261
+TEXTO va EN INGLÉS y codificado para URL (espacios como %20, comas como %2C).
+Cada imagen lleva su propia seed FIJA, escrita a mano en el HTML, para que no
+cambie al recargar. Prohibido picsum, unsplash, placehold, banco de imágenes o
+data-URI. Toda <img> lleva width y height explícitos en atributos, loading="lazy"
+(salvo la primera visible), decoding="async" y un alt descriptivo en español.
+
+Base de estilo que debe repetirse en TODOS los prompts, palabra por palabra, para
+que las seis fotos parezcan del mismo carrete:
+  dark%20moody%20barbershop%2C%20single%20hard%20warm%20key%20light%2C%20deep%20black%20background%2C%2035mm%20film%20grain%2C%20bottle%20green%20and%20whisky%20leather%20tones%2C%20no%20text
+
+Las seis imágenes, con sección, tamaño y seed:
+
+  IMG-1 · Sección 01, retrato vertical (800×1000, seed=2858)
+  straight%20razor%20shaping%20a%20thick%20black%20beard%20on%20a%20mexican%20man%20in%20his%20thirties%2C%20close%20three%20quarter%20profile%2C%20barber%20hands%20with%20tattooed%20forearm%2C%20 + base
+
+  IMG-2 · Sección 01, detalle horizontal (900×600, seed=3141)
+  macro%20detail%20of%20scissors%20and%20a%20sulfate%20free%20amber%20glass%20bottle%20on%20a%20worn%20leather%20strop%2C%20shallow%20depth%20of%20field%2C%20 + base
+
+  IMG-3 · Sección 04, vertical (760×1000, seed=5590)
+  a%20guitarist%20playing%20live%20in%20the%20corner%20of%20a%20small%20barbershop%20on%20friday%20night%2C%20backlit%20silhouette%2C%20warm%20practical%20lamps%2C%20 + base
+
+  IMG-4 · Sección 04, horizontal (900×620, seed=7712)
+  wide%20interior%20of%20a%20one%20chair%20mexico%20city%20barbershop%20at%20night%2C%20bottle%20green%20tiled%20wall%2C%20whisky%20leather%20barber%20chair%2C%20mirror%20reflection%2C%20 + base
+
+  IMG-5 · Sección 05, cuadrada pequeña ×3 (160×160, seeds 8101 / 8102 / 8103)
+  candid%20portrait%20of%20a%20young%20mexican%20man%20with%20a%20fresh%20sharp%20haircut%20looking%20at%20camera%2C%20 + base
+  (cambia solo el sujeto entre las tres: beard%20and%20glasses / short%20fade%20no%20beard / long%20hair%20and%20mustache)
+
+  IMG-6 · Sección 07, horizontal ancha (1200×700, seed=9264)
+  empty%20whisky%20leather%20barber%20chair%20under%20one%20hanging%20lamp%2C%20inviting%2C%20towel%20folded%20on%20the%20armrest%2C%20 + base
+
+------------------------------------------------------------------------------
+9. HUECO RESERVADO PARA EL VÍDEO DEL PRESENTADOR (COPIA EXACTA)
+------------------------------------------------------------------------------
+Inmediatamente después del cierre del hero, antes de la sección 01, inserta esta
+sección tal cual. El atributo hidden es OBLIGATORIO: sin él aparece un reproductor
+negro vacío y la página parece rota. ConvertIA quitará el hidden y pondrá el
+archivo cuando el vídeo esté grabado.
+
+  <section id="presentador-convertia" hidden>
+    <video controls playsinline></video>
+  </section>
+
+No añadas autoplay, ni poster, ni src. No la escondas con CSS (display:none en una
+clase): el ocultado va con el atributo hidden. Escribe reglas de estilo para esta
+sección pensando en cómo se verá cuando se muestre (ancho máximo 900px, centrada,
+la misma esquina recortada de la firma visual), pero déjala oculta en la entrega.
+
+------------------------------------------------------------------------------
+10. MOVIMIENTO CON PROPÓSITO
+------------------------------------------------------------------------------
+Cada animación tiene que justificar su existencia guiando la mirada hacia la
+reserva. Solo se permiten estas cinco, y ninguna más:
+  1. Entrada del h1: las líneas del titular suben 24px y aparecen con 80ms de
+     retardo entre ellas, una sola vez. Duración 420ms, ease-out.
+  2. Revelado al hacer scroll: cada sección entra con opacity 0→1 y translateY de
+     16px, disparado con IntersectionObserver (threshold 0.15), una sola vez por
+     elemento. Nada de rebotes ni de escalados.
+  3. El subrayado de navaja creciendo en hover y en :focus-visible de enlaces.
+  4. El botón principal: en hover sube 2px y su fondo pasa a --whisky-alto en
+     160ms. Nada de sombras de colores ni de brillos.
+  5. El acordeón de dudas: la flecha gira 90°, la altura la gestiona <details>.
+Prohibido: parallax, marquesinas, contadores animados, texto que se escribe letra
+a letra, elementos flotando en bucle, carruseles automáticos.
+Obligatorio: @media (prefers-reduced-motion: reduce) que deje todo en 0.01ms y con
+los elementos ya visibles.
+
+------------------------------------------------------------------------------
+11. REQUISITOS TÉCNICOS
+------------------------------------------------------------------------------
+  · Un solo archivo .html. CSS en un <style> en el head, JS en un <script> al final
+    del body. Cero dependencias, cero CDN, cero frameworks, cero Google Fonts.
+  · HTML semántico: header, main, section, footer. UN SOLO h1 en toda la página.
+    Jerarquía h1 → h2 → h3 sin saltos.
+  · Mobile-first: escribe primero el CSS de móvil y usa min-width para ampliar.
+    Puntos de ruptura en 48rem y 72rem. Ninguna sección debe provocar scroll
+    horizontal a 320px de ancho.
+  · Contraste AA verificado (4.5:1 en texto normal, 3:1 en títulos grandes) para
+    cada combinación que uses. Comprueba explícitamente --ceniza sobre
+    --negro-mate y --hueso sobre --verde-botella.
+  · :focus-visible con anillo de 2px en --cuero-whisky y offset de 3px, visible en
+    todos los enlaces, botones y campos. No elimines el outline sin sustituirlo.
+  · Formulario accesible: cada campo con su <label> real (no solo placeholder),
+    type y autocomplete correctos, required donde toque, y validación en JS que
+    escriba el error en un contenedor con aria-live="polite". El envío se
+    intercepta con preventDefault y muestra el estado de éxito descrito en §7.
+  · Variables CSS para toda la paleta y la tipografía. Ni un solo HEX repetido a
+    mano en las reglas.
+  · <title>, <meta name="description">, meta viewport, lang="es-MX".
+
+------------------------------------------------------------------------------
+12. DISEÑO SUSTRACTIVO — PASADA OBLIGATORIA ANTES DE ENTREGAR
+------------------------------------------------------------------------------
+Cuando tengas la página terminada, haz una pasada de recorte y elimina en torno al
+30% de lo que hayas puesto. Criterios concretos:
+  · Máximo 1 icono por sección, y solo si sustituye a una palabra. Si no puedes
+    dibujarlo con CSS puro, no va.
+  · Ningún párrafo de más de 3 frases. Corta la tercera si repite la primera.
+  · Ninguna sección con más de 1 botón, salvo el hero.
+  · Si dos frases de secciones distintas dicen lo mismo con otras palabras, borra
+    la más débil. Busca específicamente repeticiones de "sin sulfatos", "2 minutos"
+    y "artesanal": cada idea se dice una vez fuerte, no tres veces flojas.
+  · Elimina todo borde, sombra o tarjeta que no separe dos cosas que se confundían.
+  · El aire es el material: los saltos entre secciones deben ser de al menos
+    clamp(4.5rem, 10vw, 9rem).
+Al final del <head>, deja un comentario HTML con exactamente tres líneas que
+empiecen por "RECORTADO:" nombrando tres elementos que quitaste en esta pasada.
+
+------------------------------------------------------------------------------
+13. CREADOR Y CRÍTICO — AUTOEVALUACIÓN ANTES DE SOLTAR EL CÓDIGO
+------------------------------------------------------------------------------
+Antes de entregar, cámbiate el sombrero y audita tu propio trabajo como si fueras
+un consultor de CRO al que le pagan por encontrar fallos. Recorre estos ocho
+puntos y, donde falles, ARREGLA el código antes de entregar. No entregues el
+informe: entrega la página ya corregida.
+  1. ¿Se entiende la oferta sin scroll, solo con el h1 y el subtítulo?
+  2. ¿Se ve un "Reservar mi silla" en la primera pantalla y otro al final?
+  3. ¿Está el precio visible sin pulsar nada?
+  4. ¿Está resuelto el miedo a salir con un corte que no pediste, con texto
+     explícito y no insinuado?
+  5. ¿Hay alguna frase de la lista negra de §7? Busca cada una.
+  6. ¿Alguna imagen es de banco, picsum o sin seed fija?
+  7. ¿Funciona a 320px sin scroll horizontal y con el pulgar en el pie?
+  8. ¿La sección presentador-convertia conserva el atributo hidden literal?
+Después, escribe DENTRO del código, como comentario HTML justo antes de </body>,
+un bloque titulado "AUDITORIA" con una línea por cada uno de los ocho puntos y el
+veredicto OK o CORREGIDO, y en los corregidos qué cambiaste. Ese bloque es parte
+de la entrega y se revisa.
+
+------------------------------------------------------------------------------
+14. FORMATO DE SALIDA
+------------------------------------------------------------------------------
+Responde con UN único bloque de código que contenga el archivo HTML completo,
+desde <!DOCTYPE html> hasta </html>. Nada antes, nada después: sin introducción,
+sin explicación, sin lista de lo que hiciste. Los dos comentarios pedidos
+(RECORTADO y AUDITORIA) van dentro del propio archivo.
+
+------------------------------------------------------------------------------
+15. CHECKLIST FINAL — REPÁSALO LÍNEA A LÍNEA
+------------------------------------------------------------------------------
+  [ ] Hero de 100svh sin imagen ni vídeo, con h1 en condensada mayúscula gigante.
+  [ ] Un solo h1 en todo el documento.
+  [ ] Titulares en sans condensada, cuerpo en serif, datos y precios en mono.
+  [ ] Los nueve HEX de §5 declarados como variables CSS y usados como se indica.
+  [ ] La firma de navaja aparece en los cuatro sitios de §5 y en ninguno más.
+  [ ] Cero border-radius en imágenes; esquina recortada con clip-path en todas.
+  [ ] Las 7 secciones en el orden de §6, con su h2 numerado en mono.
+  [ ] Sección presentador-convertia justo después del hero, con hidden literal,
+      con <video controls playsinline> y sin src.
+  [ ] Las 6 imágenes desde image.pollinations.ai, en inglés, URL-encoded, con seed
+      fija y width/height en el atributo.
+  [ ] Botón principal con el texto exacto "Reservar mi silla", dos veces.
+  [ ] Micro-copys de §7 puestos tal cual en botones, campos y estados.
+  [ ] Ninguna frase de la lista negra. Ningún signo de exclamación. Ningún emoji.
+  [ ] Precios en pesos visibles, con cifras tabulares alineadas a la derecha.
+  [ ] Solo las cinco animaciones de §10, más prefers-reduced-motion.
+  [ ] Contraste AA comprobado, focus-visible en todo lo interactivo.
+  [ ] Formulario de 4 campos con labels, aria-live y preventDefault.
+  [ ] Sin scroll horizontal a 320px.
+  [ ] Comentario RECORTADO de tres líneas en el head.
+  [ ] Bloque AUDITORIA de ocho líneas antes de </body>.
+  [ ] Un archivo, cero dependencias externas salvo las URLs de Pollinations.
+
+DECISIONES: arquetipo=HERO TIPOGRAFICO · tipografia=CONDENSADA DE CARTEL · semilla=2858

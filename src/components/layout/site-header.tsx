@@ -8,7 +8,7 @@ const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'ConvertIA';
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 border-b border-border bg-background shadow-[0_1px_0_0_hsl(var(--border))]">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link href="/" className="group flex items-center gap-3 rounded-md">
           <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground shadow-sm">
