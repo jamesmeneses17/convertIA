@@ -1,0 +1,70 @@
+// ============================================================
+//  ConvertIA :: esquema de base de datos (PostgreSQL + Prisma)
+// ============================================================
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Un proyecto guardado en el Banco de Proyectos:
+/// el brief, las tecnicas activadas, el Prompt Maestro compilado
+/// y el codigo (HTML/CSS/JS) que devolvio la IA.
+model Project {
+  id           String   @id @default(cuid())
+  name         String
+  topic        String
+  offer        String
+  audience     String
+  tone         String
+  cta          String?
+
+  /// Array de slugs de tecnicas activas, p.ej. ["seed-strings","human-copy"]
+  techniques   Json     @default("[]")
+
+  /// Prompt Maestro compilado (texto largo)
+  masterPrompt String
+
+  /// { html, css, js } pegado desde la respuesta de la IA
+  pastedCode   Json?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([name])
+  @@map("projects")
+}
+
+/// Puente con Claude Escritorio (MCP).
+/// Un "encargo" es un Prompt Maestro puesto en el buzon para que Claude lo
+/// recoja desde la app de escritorio, genere la landing y la devuelva aqui.
+model Handoff {
+  id          String    @id @default(cuid())
+  /// Codigo corto y legible que el usuario le dicta a Claude, p.ej. LP-7K2Q
+  code        String    @unique
+  name        String
+  prompt      String
+
+  /// Codigo devuelto por Claude Escritorio
+  html        String?
+  css         String?
+  js          String?
+  /// Resumen en una linea que deja Claude al entregar
+  notes       String?
+
+  /// pendiente | entregado | cancelado
+  status      String    @default("pendiente")
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deliveredAt DateTime?
+
+  @@index([status, createdAt])
+  @@map("handoffs")
+}

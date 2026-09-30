@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "convertia": {
+      "command": "node",
+      "args": ["C:/Users/Jamex/Downloads/PROYECTO-PAGE/mcp/server.mjs"],
+      "env": {
+        "CONVERTIA_URL": "http://localhost:3300"
+      }
+    }
+  }
+}

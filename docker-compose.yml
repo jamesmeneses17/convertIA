@@ -1,0 +1,104 @@
+# ConvertIA :: docker compose
+# Levanta App (Next.js) + DB (PostgreSQL 15) con:  docker-compose up --build
+name: convertia
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_NAME: "${NEXT_PUBLIC_APP_NAME:-ConvertIA}"
+        NEXT_PUBLIC_CLAUDE_WEB_URL: "${NEXT_PUBLIC_CLAUDE_WEB_URL:-https://claude.ai/new}"
+    container_name: convertia_app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      # DATABASE_URL enlazada dinamicamente al servicio `db`
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-convertia}:${POSTGRES_PASSWORD:-convertia}@db:5432/${POSTGRES_DB:-convertia}?schema=public&connection_limit=10"
+      NEXT_PUBLIC_APP_NAME: "${NEXT_PUBLIC_APP_NAME:-ConvertIA}"
+      NEXT_PUBLIC_CLAUDE_WEB_URL: "${NEXT_PUBLIC_CLAUDE_WEB_URL:-https://claude.ai/new}"
+      # Opcional: activa el boton "Generar landing" dentro de la app.
+      # Si esta vacia, ConvertIA funciona igual en modo copiar/pegar.
+      # La clave se queda en el servidor; nunca llega al navegador.
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      ANTHROPIC_MODEL: "${ANTHROPIC_MODEL:-claude-opus-5}"
+      # Puente por carpeta: ConvertIA escribe el encargo aqui y recoge la entrega.
+      # Es la carpeta que conectas en Claude Escritorio con "Agregar carpeta".
+      BUZON_DIR: /app/buzon
+      BUZON_HOST_PATH: "${BUZON_HOST_PATH:-C:/Users/Jamex/Downloads/PROYECTO-PAGE/buzon}"
+      # Generacion de video con Veo (API de Gemini). Opcional: sin claves, el
+      # panel no aparece. Admite dos claves y rota si una agota su cuota.
+      GEMINI_API_KEY_1: "${GEMINI_API_KEY_1:-}"
+      GEMINI_API_KEY_2: "${GEMINI_API_KEY_2:-}"
+      GEMINI_VIDEO_MODEL: "${GEMINI_VIDEO_MODEL:-veo-3.1-fast-generate-preview}"
+      GENERADOS_DIR: /app/generados
+      # Banco de fotos tematicas. Sin clave, se usan fotos de relleno.
+      UNSPLASH_ACCESS_KEY: "${UNSPLASH_ACCESS_KEY:-}"
+    volumes:
+      - ./buzon:/app/buzon
+      - ./generados:/app/generados
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - convertia_net
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # Job de un solo uso: aplica las migraciones de Prisma y termina.
+  # `app` no arranca hasta que este servicio sale con codigo 0.
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    container_name: convertia_migrate
+    restart: "no"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-convertia}:${POSTGRES_PASSWORD:-convertia}@db:5432/${POSTGRES_DB:-convertia}?schema=public"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - convertia_net
+
+  db:
+    image: postgres:15-alpine
+    container_name: convertia_db
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-convertia}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-convertia}"
+      POSTGRES_DB: "${POSTGRES_DB:-convertia}"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - convertia_pgdata:/var/lib/postgresql/data
+    networks:
+      - convertia_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-convertia} -d ${POSTGRES_DB:-convertia}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  convertia_pgdata:
+    driver: local
+
+networks:
+  convertia_net:
+    driver: bridge

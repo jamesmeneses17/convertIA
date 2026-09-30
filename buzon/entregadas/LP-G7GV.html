@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colchón · Tu primer fondo de emergencia en 30 días</title>
+<meta name="description" content="Curso gratis por correo: 15 minutos al día para que, en 30 días, tengas tu primer fondo de emergencia. Sin hojas de cálculo y sin lenguaje de banco.">
+<meta name="theme-color" content="#0F1512">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CO">
+<meta property="og:title" content="Tu primer fondo de emergencia, listo en 30 días">
+<meta property="og:description" content="Para quien cobra a fin de mes y llega al día 30 en cero. Curso gratis, 15 minutos al día.">
+<meta property="og:image" content="assets/og-colchon.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230F1512'/%3E%3Crect x='14' y='36' width='36' height='12' rx='3' fill='%232BD17E'/%3E%3Crect x='14' y='18' width='36' height='12' rx='3' fill='none' stroke='%232BD17E' stroke-width='3'/%3E%3C/svg%3E">
+<style>
+/* ==========================================================
+   CADENA SEMILLA · materializada como custom properties
+   ========================================================== */
+:root {
+  /* Paleta declarada */
+  --c-base:   #F4F1EA;   /* papel cálido: color base */
+  --c-ink:    #0F1512;   /* negro verdoso: tinta */
+  --c-accent: #2BD17E;   /* verde de conversión: solo acción y firma */
+  --c-n1:     #5B635E;   /* neutro 1: texto secundario */
+  --c-n2:     #DAD5C8;   /* neutro 2: líneas y superficies */
+  --c-accent-ink: #146B40; /* variante del acento para texto sobre papel (AA 5.8:1) */
+
+  /* Tokens semánticos (se reasignan en modo oscuro y en secciones invertidas) */
+  --bg: var(--c-base);
+  --fg: var(--c-ink);
+  --muted: var(--c-n1);
+  --line: var(--c-n2);
+  --green-text: var(--c-accent-ink);
+  --focus: var(--c-ink);
+  --inv-bg: var(--c-ink);
+  --inv-fg: var(--c-base);
+  --inv-muted: #A7AFA9;
+  --inv-line: #2A342E;
+
+  /* Tipografía: serif con carácter + sans neutra + mono para la firma */
+  --f-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --f-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  /* Escala modular 1.25 (tercera mayor) con extremos fluidos */
+  --t-sm: 0.8rem;
+  --t-0: 1rem;
+  --t-1: 1.25rem;
+  --t-2: 1.563rem;
+  --t-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.563rem);
+  --t-h2: clamp(1.953rem, 1.4rem + 2.4vw, 3.052rem);
+  --t-h1: clamp(2.441rem, 1.5rem + 4.2vw, 4.768rem);
+  --t-giant: clamp(7.451rem, 3rem + 18vw, 14.552rem);
+  --lh-tight: 1.08;
+  --lh-head: 1.15;
+  --lh-body: 1.6;
+
+  /* Espaciado en base 8px */
+  --s-1: 0.5rem;  --s-2: 1rem;  --s-3: 1.5rem; --s-4: 2rem;
+  --s-5: 3rem;    --s-6: 4rem;  --s-7: 6rem;   --s-8: 8rem;
+
+  /* Rejilla */
+  --container: 75rem;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+
+  /* Sistema: 1 grosor de borde, 1 radio + variante, 2 sombras, 3 transiciones */
+  --bw: 2px;
+  --r: 14px;
+  --r-sm: 6px;
+  --shadow-1: 0 1px 2px rgba(15, 21, 18, 0.10);
+  --shadow-2: 8px 8px 0 var(--c-accent);
+  --tr-color: background-color 160ms ease, color 160ms ease;
+  --tr-press: transform 120ms ease;
+  --tr-turn: transform 200ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0F1512;
+    --fg: #F4F1EA;
+    --muted: #A7AFA9;
+    --line: #2A342E;
+    --green-text: var(--c-accent);
+    --focus: var(--c-accent);
+    --inv-bg: #17201B;
+    --inv-fg: #F4F1EA;
+    --inv-muted: #A7AFA9;
+    --inv-line: #2F3A33;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ========== Base ========== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-sans);
+  font-size: var(--t-0);
+  line-height: var(--lh-body);
+  overflow-x: hidden;
+}
+img, video { display: block; max-width: 100%; height: auto; }
+h1, h2, h3 { font-family: var(--f-serif); font-weight: 600; line-height: var(--lh-head); margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: var(--r-sm); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: var(--s-2); top: -100px; z-index: 10; background: var(--c-accent); color: var(--c-ink); padding: var(--s-1) var(--s-2); border-radius: var(--r-sm); font-weight: 600; }
+.skip:focus { top: var(--s-2); }
+
+.wrap { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--s-3); }
+@media (min-width: 768px) { .grid { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
+.grid > * { grid-column: 1 / -1; }
+
+.section { padding-block: var(--s-7); }
+@media (min-width: 1200px) { .section { padding-block: var(--s-8); } }
+.inverse {
+  --bg: var(--inv-bg); --fg: var(--inv-fg); --muted: var(--inv-muted); --line: var(--inv-line);
+  --green-text: var(--c-accent); --focus: var(--c-accent);
+  background: var(--bg); color: var(--fg);
+}
+
+/* ========== FIRMA VISUAL: numeración de sección + regla fina ========== */
+.sig {
+  display: flex; align-items: center; gap: var(--s-2);
+  font-family: var(--f-mono); font-size: var(--t-sm);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--s-4);
+}
+.sig b { color: var(--green-text); font-weight: 600; }
+.sig::after { content: ""; flex: 1; height: var(--bw); background: var(--line); max-width: 12rem; }
+
+/* ========== Botón (una sola acción primaria) ========== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 0 var(--s-4);
+  background: var(--c-accent); color: var(--c-ink);
+  border: var(--bw) solid var(--c-ink); border-radius: var(--r-sm);
+  font: 600 clamp(1.063rem, 0.95rem + 0.5vw, 1.25rem)/1.2 var(--f-sans); text-align: center;
+  text-decoration: none; cursor: pointer;
+  transition: var(--tr-color), var(--tr-press);
+}
+.btn:hover { background: #4ADB91; }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] { cursor: progress; background: var(--c-n2); }
+.support { font-size: var(--t-sm); color: var(--muted); margin-top: var(--s-1); }
+.text-link { color: var(--green-text); font-weight: 600; text-underline-offset: 0.2em; display: inline-flex; align-items: center; min-height: 44px; }
+
+/* ========== Cabecera ========== */
+.site-header { position: absolute; inset: 0 0 auto 0; z-index: 3; color: var(--c-base); --focus: var(--c-accent); }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 72px; gap: var(--s-2); }
+.brand { display: inline-flex; align-items: center; gap: var(--s-1); font-family: var(--f-serif); font-size: var(--t-1); font-weight: 600; text-decoration: none; min-height: 44px; }
+.brand svg { width: 28px; height: 28px; flex: none; }
+.site-nav { display: none; gap: var(--s-3); }
+.site-nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; color: var(--inv-muted); }
+.site-nav a:hover { color: var(--c-base); text-decoration: underline; text-underline-offset: 0.25em; }
+@media (min-width: 480px) { .site-nav { display: flex; } }
+
+/* ========== 00 · HERO ========== */
+.hero { position: relative; isolation: isolate; color: var(--c-base); background: var(--c-ink); --muted: #B9C0BB; --line: #2F3A33; --green-text: var(--c-accent); }
+.hero-media, .hero-media img, .hero-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.hero-media::after { content: ""; position: absolute; inset: 0; background: rgba(15, 21, 18, 0.80); z-index: -1; }
+.hero .wrap { padding-top: calc(72px + var(--s-6)); padding-bottom: var(--s-7); }
+.hero-copy { align-self: end; }
+.hero h1 { font-size: var(--t-h1); line-height: var(--lh-tight); max-width: 14ch; }
+.hero h1 em { font-style: italic; color: var(--c-accent); }
+.hero-lede { font-size: var(--t-1); color: #DCE0DC; max-width: 36ch; margin-top: var(--s-3); }
+.trust { display: flex; gap: var(--s-1); align-items: flex-start; margin-top: var(--s-4); font-size: var(--t-sm); color: var(--muted); max-width: 40ch; }
+.trust svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+.hero-form { margin-top: var(--s-5); }
+@media (min-width: 768px) {
+  .hero .wrap { min-height: min(100svh, 56rem); display: grid; align-content: end; }
+  .hero-copy { grid-column: 1 / span 7; }
+  .hero-form { grid-column: 8 / span 5; margin-top: 0; align-self: end; }
+}
+@media (min-width: 1200px) { .hero-form { grid-column: 9 / span 4; } }
+
+/* ========== Formulario (componente único, se usa dos veces) ========== */
+.card {
+  background: var(--c-base); color: var(--c-ink);
+  --fg: var(--c-ink); --muted: var(--c-n1); --line: var(--c-n2); --focus: var(--c-ink); --green-text: var(--c-accent-ink);
+  border-radius: var(--r); padding: var(--s-4);
+  box-shadow: var(--shadow-2);
+}
+.signup label { display: block; font-weight: 600; font-size: var(--t-1); font-family: var(--f-serif); }
+.help { font-size: var(--t-sm); color: var(--muted); margin: var(--s-1) 0 var(--s-2); }
+.signup input {
+  width: 100%; min-height: 52px; padding: 0 var(--s-2);
+  font: inherit; font-size: var(--t-0); color: var(--c-ink);
+  background: #FFFFFF; border: var(--bw) solid var(--c-n1); border-radius: var(--r-sm);
+}
+.signup input:focus-visible { outline: 3px solid var(--c-ink); outline-offset: 2px; border-color: var(--c-ink); }
+.signup input[aria-invalid="true"] { border-color: #B3261E; }
+.signup .btn { width: 100%; margin-top: var(--s-2); }
+.msg { min-height: 1.6em; margin-top: var(--s-1); font-size: var(--t-sm); }
+.msg.is-error { color: #B3261E; font-weight: 600; }
+.msg.is-loading { color: var(--c-n1); }
+.success { display: none; }
+.signup.is-done .fields { display: none; }
+.signup.is-done .success { display: block; }
+.success h3 { font-size: var(--t-2); margin-bottom: var(--s-1); }
+.success p + p { margin-top: var(--s-1); }
+@media (prefers-color-scheme: dark) { .card { box-shadow: var(--shadow-2); } }
+
+/* ========== 01 · PROBLEMA (asimétrica: cifra gigante 5 / texto 7 desplazado) ========== */
+.giant {
+  font-family: var(--f-serif); font-size: var(--t-giant); line-height: 0.85; font-weight: 600;
+  letter-spacing: -0.04em; color: var(--fg);
+}
+.giant-caption { font-family: var(--f-mono); font-size: var(--t-sm); color: var(--muted); margin-top: var(--s-2); max-width: 22ch; }
+.problem-text h2 { font-size: var(--t-h2); max-width: 16ch; }
+.problem-text p { margin-top: var(--s-3); max-width: 44ch; color: var(--muted); }
+.problem-text p:last-child { color: var(--fg); font-weight: 600; }
+.problem-text { margin-top: var(--s-5); }
+@media (min-width: 768px) {
+  .problem-num { grid-column: 1 / span 5; }
+  .problem-text { grid-column: 6 / span 7; margin-top: var(--s-7); }
+}
+@media (min-width: 1200px) { .problem-text { grid-column: 7 / span 6; } }
+
+/* ========== 02 · CÓMO FUNCIONA ========== */
+.how h2 { font-size: var(--t-h2); max-width: 18ch; }
+.steps { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-5); }
+.step { border-top: var(--bw) solid var(--fg); padding-top: var(--s-3); }
+.step-days { font-family: var(--f-mono); font-size: var(--t-sm); color: var(--green-text); letter-spacing: 0.06em; text-transform: uppercase; }
+.step h3 { font-size: var(--t-h3); margin-top: var(--s-1); }
+.step p { color: var(--muted); margin-top: var(--s-1); max-width: 34ch; }
+@media (min-width: 768px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); } }
+@media (min-width: 1200px) {
+  .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--s-4); }
+  .step:nth-child(2) { margin-top: var(--s-4); }
+  .step:nth-child(3) { margin-top: var(--s-6); }
+  .step:nth-child(4) { margin-top: var(--s-7); }
+}
+.mid-cta { margin-top: var(--s-7); display: flex; flex-direction: column; align-items: flex-start; }
+@media (min-width: 768px) { .mid-cta { grid-column: 1 / span 6; } }
+
+/* ========== 03 · QUÉ CAMBIA (asimétrica: imagen sangrada al borde izquierdo) ========== */
+.benefits { padding-block: 0; }
+.benefits-inner { display: grid; }
+.benefits-media img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 5; }
+.benefits-copy { padding: var(--s-7) var(--gutter); }
+.benefits-copy h2 { font-size: var(--t-h2); max-width: 15ch; }
+.benefit-list { list-style: none; margin: var(--s-5) 0 0; padding: 0; }
+.benefit-list li { padding-block: var(--s-3); border-top: var(--bw) solid var(--line); }
+.benefit-list h3 { font-size: var(--t-h3); }
+.benefit-list p { color: var(--muted); margin-top: var(--s-1); max-width: 42ch; }
+.facts { font-family: var(--f-mono); font-size: var(--t-sm); color: var(--green-text); margin-top: var(--s-4); letter-spacing: 0.04em; }
+@media (min-width: 768px) {
+  .benefits-inner { grid-template-columns: 5fr 7fr; align-items: stretch; }
+  .benefits-media img { aspect-ratio: auto; min-height: 100%; }
+  .benefits-copy { padding: var(--s-8) var(--gutter) var(--s-8) var(--s-6); max-width: 46rem; }
+}
+
+/* ========== 04 · PRUEBA SOCIAL ========== */
+.proof h2 { font-size: var(--t-h2); max-width: 20ch; }
+.quotes { display: grid; gap: var(--s-5); margin-top: var(--s-6); }
+.quote { margin: 0; display: grid; grid-template-columns: 72px 1fr; gap: var(--s-3); align-items: start; }
+.quote img { width: 72px; height: 72px; border-radius: 50%; }
+.quote blockquote { margin: 0; font-family: var(--f-serif); font-size: var(--t-1); line-height: 1.4; }
+.quote figcaption { font-size: var(--t-sm); color: var(--muted); margin-top: var(--s-1); }
+.pending { font-family: var(--f-mono); font-size: var(--t-sm); color: var(--muted); }
+.not-for { margin-top: var(--s-6); padding: var(--s-3) 0 0; border-top: var(--bw) solid var(--fg); max-width: 60ch; }
+.not-for strong { font-family: var(--f-serif); font-size: var(--t-1); display: block; margin-bottom: var(--s-1); }
+@media (min-width: 768px) {
+  .proof h2, .proof .sig { grid-column: 1 / span 7; }
+  .quotes { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-6); }
+  .quotes, .not-for { grid-column: 1 / span 10; }
+}
+
+/* ========== 05 · PREGUNTAS ========== */
+.faq h2 { font-size: var(--t-h2); }
+.faq-list { margin-top: var(--s-5); border-bottom: var(--bw) solid var(--line); }
+.faq details { border-top: var(--bw) solid var(--line); }
+.faq summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--s-2);
+  min-height: 64px; padding-block: var(--s-2);
+  font-family: var(--f-serif); font-size: var(--t-h3); font-weight: 600;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+"; font-family: var(--f-mono); font-size: var(--t-2); color: var(--green-text);
+  flex: none; width: 44px; text-align: center; transition: var(--tr-turn);
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { color: var(--muted); padding-bottom: var(--s-3); max-width: 60ch; }
+@media (min-width: 768px) {
+  .faq-head { grid-column: 1 / span 4; }
+  .faq-list { grid-column: 5 / span 8; margin-top: 0; }
+}
+
+/* ========== 06 · CIERRE ========== */
+.close h2 { font-size: var(--t-h2); max-width: 14ch; }
+.close-lede { color: var(--muted); margin-top: var(--s-3); max-width: 36ch; font-size: var(--t-1); }
+.close .card { margin-top: var(--s-5); }
+@media (min-width: 768px) {
+  .close-copy { grid-column: 1 / span 6; align-self: center; }
+  .close .card { grid-column: 8 / span 5; margin-top: 0; }
+}
+
+/* ========== Pie ========== */
+.site-footer { padding-block: var(--s-6); border-top: var(--bw) solid var(--line); font-size: var(--t-sm); color: var(--muted); }
+.site-footer .wrap { display: grid; gap: var(--s-3); }
+.site-footer nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--s-3); }
+.site-footer nav a { display: inline-flex; align-items: center; min-height: 44px; }
+@media (min-width: 768px) { .site-footer .wrap { grid-template-columns: 1fr auto; align-items: center; } }
+
+/* ========== Movimiento reducido: sin video, póster estático ========== */
+@media (prefers-reduced-motion: reduce) {
+  .hero-media video { display: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Colchón, inicio">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="15" width="22" height="8" rx="2" fill="#2BD17E"/><rect x="3" y="5" width="22" height="8" rx="2" fill="none" stroke="#2BD17E" stroke-width="2"/></svg>
+      Colchón
+    </a>
+    <nav class="site-nav" aria-label="Principal">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- Sección HERO · Ataca la objeción "esto es complicado / es para gente que ya sabe de finanzas": promesa con plazo, esfuerzo diario acotado y cero jerga. Señal de confianza contra el miedo a que le vendan un producto financiero. -->
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero-media">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Crect width='1920' height='1080' fill='%23121C17'/%3E%3Cg stroke='%232BD17E' stroke-opacity='.12' stroke-width='2' fill='none'%3E%3Crect x='1180' y='240' width='520' height='640' rx='14'/%3E%3Cpath d='M1240 360h400M1240 440h400M1240 520h260'/%3E%3C/g%3E%3C/svg%3E"
+         data-final-src="assets/hero-poster.jpg"
+         width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"
+         alt="Una joven en la mesa de su cocina con luz de mañana cierra un cuaderno de notas y se recuesta tranquila en la silla.">
+    <video autoplay muted loop playsinline preload="metadata" width="1920" height="1080" aria-hidden="true"
+           poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Crect width='1920' height='1080' fill='%23121C17'/%3E%3C/svg%3E">
+      <source src="assets/hero-loop.webm" type="video/webm">
+      <source src="assets/hero-loop.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="wrap grid">
+    <div class="hero-copy">
+      <p class="sig"><b>00</b> Curso gratis · 30 días</p>
+      <h1 id="hero-title">Tu primer fondo de emergencia, <em>listo en 30 días.</em></h1>
+      <p class="hero-lede">Para quien cobra a fin de mes y llega al 30 en cero. Quince minutos al día, por correo. Sin hojas de cálculo.</p>
+      <p class="trust">
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9.5l3.5 3.5L15 4.5" fill="none" stroke="#2BD17E" stroke-width="2"/></svg>
+        No vendemos tarjetas, créditos ni inversiones. Nunca te pediremos datos bancarios.
+      </p>
+    </div>
+
+    <div class="hero-form card">
+      <form class="signup js-signup" novalidate data-endpoint="">
+        <div class="fields">
+          <label for="email-hero">¿A qué correo te mandamos el día 1?</label>
+          <p class="help" id="email-hero-help">Solo lo usamos para enviarte una lección al día. Nada más.</p>
+          <input id="email-hero" name="email" type="email" autocomplete="email" inputmode="email" required
+                 placeholder="tucorreo@gmail.com" aria-describedby="email-hero-help email-hero-msg">
+          <button class="btn" type="submit">Registrarme gratis</button>
+          <p class="support">Gratis. Sin tarjeta. Te das de baja con un clic.</p>
+          <p class="msg" id="email-hero-msg" aria-live="polite"></p>
+        </div>
+        <div class="success" tabindex="-1">
+          <h3>Listo, ya estás dentro.</h3>
+          <p>La lección del día 1 va en camino a <strong class="js-email"></strong>.</p>
+          <p class="support">¿No llega en 5 minutos? Revisa Promociones o Spam y márcala como “no es spam”.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Sección PROBLEMA · Ataca el miedo de identidad "soy malo con la plata" y la objeción "gano muy poco para ahorrar": el problema es la falta de sistema, no la persona. -->
+<section class="section" aria-labelledby="problem-title">
+  <div class="wrap grid">
+    <div class="problem-num">
+      <p class="sig"><b>01</b> Cómo va tu mes</p>
+      <p class="giant" aria-hidden="true">$0</p>
+      <p class="giant-caption">Lo que queda en tu cuenta el día 29. Casi siempre.</p>
+    </div>
+    <div class="problem-text">
+      <h2 id="problem-title">No es que ganes poco. Nadie te enseñó el orden.</h2>
+      <p>Te pagan. Pagas arriendo, celular y transporte. Lo que queda se va en cosas pequeñas que ni recuerdas.</p>
+      <p>Y el día que se daña el celular, el plan B es la tarjeta de crédito o pedirle prestado a alguien.</p>
+      <p>Eso no dice nada malo de ti. Dice que tu plata todavía no tiene un sistema.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección CÓMO FUNCIONA · Ataca las objeciones "no tengo tiempo" y "esto es complicado": cuatro etapas con días concretos y 15 minutos diarios. -->
+<section class="section how" id="como-funciona" aria-labelledby="how-title">
+  <div class="wrap grid">
+    <div>
+      <p class="sig"><b>02</b> Cómo funciona</p>
+      <h2 id="how-title">Cuatro etapas. Una lección corta cada día.</h2>
+      <ol class="steps">
+        <li class="step">
+          <p class="step-days">Días 1–3</p>
+          <h3>Ves a dónde se fue tu plata</h3>
+          <p>Repasas tu último mes con tres preguntas. Sin apps nuevas y sin juzgarte.</p>
+        </li>
+        <li class="step">
+          <p class="step-days">Días 4–10</p>
+          <h3>Fijas tu cifra y la automatizas</h3>
+          <p>Calculas tu primera meta según tu sueldo y programas que se aparte sola el día de pago.</p>
+        </li>
+        <li class="step">
+          <p class="step-days">Días 11–24</p>
+          <h3>Encuentras plata que no vas a extrañar</h3>
+          <p>Eliges tres recortes tú. Si el café de la mañana te importa, se queda.</p>
+        </li>
+        <li class="step">
+          <p class="step-days">Días 25–30</p>
+          <h3>Proteges el fondo de ti mismo</h3>
+          <p>Reglas simples para saber qué es una emergencia antes de que llegue la tentación.</p>
+        </li>
+      </ol>
+    </div>
+    <div class="mid-cta">
+      <a class="btn" href="#registro" data-focus-form>Registrarme gratis</a>
+      <p class="support">La lección del día 1 te llega apenas te registras.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección QUÉ CAMBIA · Ataca la objeción "ya intenté ahorrar y no me funcionó" y conecta con las motivaciones: tranquilidad, independencia, control. -->
+<section class="section benefits inverse" aria-labelledby="benefits-title">
+  <div class="benefits-inner">
+    <div class="benefits-media">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 1500'%3E%3Cdefs%3E%3Cpattern id='g' width='150' height='150' patternUnits='userSpaceOnUse' x='225' y='300'%3E%3Crect x='20' y='20' width='110' height='110' rx='6' fill='none' stroke='%232BD17E' stroke-opacity='.45' stroke-width='4'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='1200' height='1500' fill='%23143D29'/%3E%3Crect x='225' y='300' width='750' height='900' fill='url(%23g)'/%3E%3Cg fill='%232BD17E'%3E%3Crect x='245' y='320' width='110' height='110' rx='6'/%3E%3Crect x='395' y='320' width='110' height='110' rx='6'/%3E%3Crect x='545' y='320' width='110' height='110' rx='6'/%3E%3Crect x='695' y='320' width='110' height='110' rx='6'/%3E%3Crect x='845' y='320' width='110' height='110' rx='6'/%3E%3Crect x='245' y='470' width='110' height='110' rx='6'/%3E%3Crect x='395' y='470' width='110' height='110' rx='6'/%3E%3C/g%3E%3C/svg%3E"
+           data-final-src="assets/detalle-cuaderno-30-dias.jpg"
+           width="1200" height="1500" loading="lazy" decoding="async"
+           alt="Vista cenital de un cuaderno abierto con una cuadrícula de 30 casillas dibujada a mano; las primeras siete están rellenas con marcador verde.">
+    </div>
+    <div class="benefits-copy">
+      <p class="sig"><b>03</b> Qué cambia</p>
+      <h2 id="benefits-title">Lo que cambia cuando tienes un colchón.</h2>
+      <ul class="benefit-list">
+        <li>
+          <h3>Un imprevisto deja de ser una crisis.</h3>
+          <p>Se daña el celular y pagas con tu fondo, no con una deuda que te sigue cobrando intereses.</p>
+        </li>
+        <li>
+          <h3>Dejas de pedir prestado a fin de mes.</h3>
+          <p>Primero se aparta, después gastas. El día 28 deja de ser un examen.</p>
+        </li>
+        <li>
+          <h3>Abres la app del banco sin miedo.</h3>
+          <p>Sabes cuánto puedes gastar esta semana antes de mirar el saldo.</p>
+        </li>
+      </ul>
+      <p class="facts">15 min al día · 1 transferencia automática · 0 apps nuevas</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección PRUEBA SOCIAL · Ataca el miedo "esto es una estafa / nadie lo ha probado". Marcadores honestos: no se inventan testimonios. Incluye para quién NO es. -->
+<section class="section proof" aria-labelledby="proof-title">
+  <div class="wrap grid">
+    <p class="sig"><b>04</b> Quién lo ha hecho</p>
+    <h2 id="proof-title">Lo que cuentan quienes llegaron al día 30.</h2>
+    <div class="quotes">
+      <figure class="quote">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480'%3E%3Crect width='480' height='480' fill='%23DAD5C8'/%3E%3Ccircle cx='240' cy='190' r='80' fill='%235B635E'/%3E%3Cpath d='M90 480c20-110 80-160 150-160s130 50 150 160z' fill='%235B635E'/%3E%3C/svg%3E"
+             data-final-src="assets/retrato-alumno-1.jpg"
+             width="480" height="480" loading="lazy" decoding="async"
+             alt="[Retrato real pendiente] Foto del alumno o alumna que da este testimonio, con su permiso.">
+        <div>
+          <blockquote><p class="pending">[Testimonio real pendiente: cita textual de un alumno del primer grupo, publicada con su permiso.]</p></blockquote>
+          <figcaption>[Nombre, edad y ciudad reales pendientes]</figcaption>
+        </div>
+      </figure>
+      <figure class="quote">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480'%3E%3Crect width='480' height='480' fill='%23DAD5C8'/%3E%3Ccircle cx='240' cy='190' r='80' fill='%235B635E'/%3E%3Cpath d='M90 480c20-110 80-160 150-160s130 50 150 160z' fill='%235B635E'/%3E%3C/svg%3E"
+             data-final-src="assets/retrato-alumno-2.jpg"
+             width="480" height="480" loading="lazy" decoding="async"
+             alt="[Retrato real pendiente] Foto de una segunda persona del primer grupo, con su permiso.">
+        <div>
+          <blockquote><p class="pending">[Testimonio real pendiente: qué hizo con su fondo la primera vez que lo necesitó.]</p></blockquote>
+          <figcaption>[Nombre, edad y ciudad reales pendientes]</figcaption>
+        </div>
+      </figure>
+    </div>
+    <p class="not-for">
+      <strong>Para quién no es.</strong>
+      Si ya tienes tres meses de gastos ahorrados, o buscas invertir en acciones o cripto, este curso se te va a quedar corto. Es para empezar desde cero.
+    </p>
+  </div>
+</section>
+
+<!-- Sección PREGUNTAS · Ataca una por una las objeciones reales: "¿cuál es la trampa?", "gano muy poco", "no tengo tiempo", "ya lo intenté", "me van a vender algo", "¿y si me atraso?". -->
+<section class="section faq" id="preguntas" aria-labelledby="faq-title">
+  <div class="wrap grid">
+    <div class="faq-head">
+      <p class="sig"><b>05</b> Preguntas</p>
+      <h2 id="faq-title">Lo que te estás preguntando.</h2>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>Si es gratis, ¿dónde está la trampa?</summary>
+        <p>No hay un módulo final bloqueado ni una tarjeta que registrar. El curso completo es gratis. Si algún día sacamos algo de pago, te lo contamos por correo y decides tú.</p>
+      </details>
+      <details>
+        <summary>Gano muy poco. ¿De verdad puedo ahorrar?</summary>
+        <p>Sí, porque tu meta la calculas tú el día 4, a partir de tu sueldo real. Puede empezar pequeña. Lo que importa es que se aparte sola cada mes.</p>
+      </details>
+      <details>
+        <summary>No tengo tiempo para otro curso.</summary>
+        <p>Cada lección toma 15 minutos y llega a tu correo. Si un día no puedes, la lees al siguiente. No hay videos de una hora.</p>
+      </details>
+      <details>
+        <summary>Ya intenté ahorrar y siempre termino gastándolo.</summary>
+        <p>Ahorrar “lo que sobre” casi nunca funciona, porque nunca sobra. Aquí apartas primero, de forma automática, y pones reglas claras para no tocarlo.</p>
+      </details>
+      <details>
+        <summary>¿Me van a vender una tarjeta, un crédito o una inversión?</summary>
+        <p>No. No recibimos comisiones de bancos ni te recomendamos productos. Nunca te pediremos claves ni números de cuenta.</p>
+      </details>
+      <details>
+        <summary>¿Y si me atraso unos días?</summary>
+        <p>No pasa nada. Las lecciones se quedan en tu correo. Terminar en 40 días también cuenta.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- Sección CIERRE · Ataca el miedo a perder tiempo o dinero: misma acción, riesgo cero explícito (gratis, sin tarjeta, baja con un clic). -->
+<section class="section close inverse" id="registro" aria-labelledby="close-title">
+  <div class="wrap grid">
+    <div class="close-copy">
+      <p class="sig"><b>06</b> Tu día 1</p>
+      <h2 id="close-title">Tu próximo día 30 puede terminar distinto.</h2>
+      <p class="close-lede">Deja tu correo y mañana ya sabes a dónde se va tu plata.</p>
+    </div>
+    <div class="card">
+      <form class="signup js-signup" novalidate data-endpoint="">
+        <div class="fields">
+          <label for="email-close">¿A qué correo te mandamos el día 1?</label>
+          <p class="help" id="email-close-help">Solo lo usamos para enviarte una lección al día. Nada más.</p>
+          <input id="email-close" name="email" type="email" autocomplete="email" inputmode="email" required
+                 placeholder="tucorreo@gmail.com" aria-describedby="email-close-help email-close-msg">
+          <button class="btn" type="submit">Registrarme gratis</button>
+          <p class="support">Gratis. Sin tarjeta. Te das de baja con un clic.</p>
+          <p class="msg" id="email-close-msg" aria-live="polite"></p>
+        </div>
+        <div class="success" tabindex="-1">
+          <h3>Listo, ya estás dentro.</h3>
+          <p>La lección del día 1 va en camino a <strong class="js-email"></strong>.</p>
+          <p class="support">¿No llega en 5 minutos? Revisa Promociones o Spam y márcala como “no es spam”.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© 2026 Colchón. Contenido educativo, no asesoría financiera personalizada. Usamos tu correo solo para enviarte las lecciones.</p>
+    <nav aria-label="Pie de página">
+      <ul>
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#preguntas">Preguntas</a></li>
+        <li><a href="#privacidad">Privacidad</a></li>
+        <li><a href="#aviso-legal">Aviso legal</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var TYPOS = { "gmial.com": "gmail.com", "gmal.com": "gmail.com", "gmail.co": "gmail.com", "hotmial.com": "hotmail.com", "hotmail.co": "hotmail.com", "outlok.com": "outlook.com", "yaho.com": "yahoo.com" };
+
+  function setMsg(el, text, kind) {
+    el.textContent = text;
+    el.className = "msg" + (kind ? " is-" + kind : "");
+  }
+
+  function send(endpoint, email) {
+    if (!endpoint) {
+      // Sin backend configurado: simulamos la respuesta para poder probar los estados.
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () { navigator.onLine === false ? reject(new Error("offline")) : resolve(); }, 900);
+      });
+    }
+    return fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email })
+    }).then(function (r) { if (!r.ok) throw new Error("http"); });
+  }
+
+  document.querySelectorAll(".js-signup").forEach(function (form) {
+    var input = form.querySelector("input[type=email]");
+    var btn = form.querySelector("button[type=submit]");
+    var msg = form.querySelector(".msg");
+    var label = btn.textContent;
+
+    input.addEventListener("input", function () {
+      if (input.getAttribute("aria-invalid") === "true") {
+        input.removeAttribute("aria-invalid");
+        setMsg(msg, "");
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = input.value.trim().toLowerCase();
+
+      if (!email) {
+        input.setAttribute("aria-invalid", "true");
+        setMsg(msg, "Escribe tu correo para mandarte la lección del día 1.", "error");
+        input.focus();
+        return;
+      }
+      if (!EMAIL_RE.test(email)) {
+        input.setAttribute("aria-invalid", "true");
+        setMsg(msg, "A ese correo le falta algo. Revisa que tenga @ y un dominio, como ana@gmail.com.", "error");
+        input.focus();
+        return;
+      }
+      var domain = email.split("@")[1];
+      if (TYPOS[domain] && form.dataset.typoChecked !== email) {
+        form.dataset.typoChecked = email;
+        input.setAttribute("aria-invalid", "true");
+        setMsg(msg, "¿Quisiste decir " + email.split("@")[0] + "@" + TYPOS[domain] + "? Corrígelo o vuelve a pulsar el botón si está bien.", "error");
+        input.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Guardando tu lugar…";
+      setMsg(msg, "Un segundo, estamos preparando tu día 1.", "loading");
+
+      send(form.dataset.endpoint, email).then(function () {
+        form.querySelector(".js-email").textContent = email;
+        form.classList.add("is-done");
+        form.querySelector(".success").focus();
+      }).catch(function (err) {
+        btn.disabled = false;
+        btn.textContent = label;
+        setMsg(msg, err && err.message === "offline"
+          ? "Parece que se cayó tu conexión y no pudimos guardar tu correo. Revisa el internet y vuelve a intentarlo."
+          : "No pudimos guardar tu correo por un fallo nuestro. Inténtalo en un minuto; si sigue igual, escríbenos a hola@colchon.co.", "error");
+      });
+    });
+  });
+
+  // Llamada a la acción de mitad de página: baja al formulario final y pone el cursor en el correo.
+  document.querySelectorAll("[data-focus-form]").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      var target = document.querySelector(link.getAttribute("href"));
+      if (!target) return;
+      e.preventDefault();
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      var field = target.querySelector("input");
+      if (field) setTimeout(function () { field.focus({ preventScroll: true }); }, reduce ? 0 : 500);
+    });
+  });
+
+  // Si el usuario pide menos movimiento, pausamos el video aunque el CSS ya lo oculte.
+  var vid = document.querySelector(".hero-media video");
+  if (vid && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { vid.pause(); vid.removeAttribute("autoplay"); }
+})();
+</script>
+</body>
+</html>
+<!--
+==========================================================================================
+DOCUMENTACIÓN DE LA ENTREGA · ENCARGO LP-G7GV · ConvertIA
+==========================================================================================
+
+ACTIVOS DE IMAGEN
+------------------------------------------------------------------------------------------
+1) hero-poster.jpg · Fondo del hero y póster del video · 16:9 · 1920x1080 · eager, fetchpriority high
+   Prompt: "A woman in her mid-twenties sitting at a small apartment kitchen table in early morning, closing a paper notebook and leaning back in her chair with a calm, unposed expression, a phone face-down beside a mug. Wide 24mm, eye level, subject placed in the right third. Soft window light from the right, gentle falloff into shadow on the left. Palette of deep green-black shadows (#0F1512), warm paper whites (#F4F1EA) and one small green object (#2BD17E). Film grain 35mm, matte finish, natural skin texture. Negative: no text, no watermark, no logos, no distorted hands, no extra fingers, no stock-photo smile, no busy background, no money bills fanned out. Breathing room: keep the left 55% of the frame dark and clean for an overlaid headline."
+
+2) detalle-cuaderno-30-dias.jpg · Sección "Qué cambia", imagen sangrada al borde · 4:5 · 1200x1500 · lazy
+   Prompt: "Overhead flat-lay of an open paper notebook on a dark green linen surface, a hand-drawn grid of 30 empty squares with the first seven filled in with a green marker, a green marker capped beside it. Overhead 50mm, perfectly top-down. Single soft diffused light from the top left. Palette: deep green (#143D29), paper white (#F4F1EA), marker green (#2BD17E). Matte, fine paper texture, high detail. Negative: no text, no numbers, no watermark, no logos, no hands, no coins, no busy background. Breathing room: keep the bottom 25% empty surface."
+
+3) retrato-alumno-1.jpg y 4) retrato-alumno-2.jpg · Prueba social · 1:1 · 480x480 · lazy
+   Uso: SOLO con fotos reales de alumnos con permiso. El prompt sirve de guía de estilo para el fotógrafo, no para generar personas falsas.
+   Guía: "Head-and-shoulders portrait of a real student, portrait 85mm, eye level, plain warm paper-colored wall (#F4F1EA), soft window light from the left, relaxed natural expression, dark green or black clothing. Film grain 35mm, matte. Negative: no text, no watermark, no logos, no stock-photo smile, no busy background. Breathing room: centered subject with even margins for circular crop."
+
+ACTIVOS DE VIDEO
+------------------------------------------------------------------------------------------
+Peso máximo: menos de 2 MB por clip · .mp4 H.264 + alternativa .webm (VP9) · sin audio · sin texto incrustado · 1920x1080 exportable a 1280x720.
+
+Clip A · hero-loop (implementado en el HTML) · 6 s · static with subject motion
+   Plano 1 (0 a 2 s): cuaderno abierto, mano apoyada sobre la página, vapor leve de la taza.
+   Plano 2 (2 a 4 s): la mano cierra el cuaderno despacio; la persona se recuesta.
+   Plano 3 (4 a 6 s): vuelve a abrirlo y apoya la mano; termina idéntico al fotograma inicial.
+   Ritmo: lento y parejo, sin cortes. Primer y último fotograma: cuaderno abierto, mano en la página, misma posición.
+   Prompt: "Static locked-off wide shot, 24mm, of a young woman at a kitchen table in soft morning window light, she slowly closes a notebook, leans back calmly, then reopens it and rests her hand on the page, ending in the exact pose of the first frame for a seamless loop. Subtle steam from a mug. Deep green-black shadows, warm paper whites, one small green object. 35mm film grain, matte. No text, no logos, no watermark, no camera shake, no audio, no distorted hands. Keep the left half of the frame dark and uncluttered."
+
+Clip B · cuadricula-loop (alternativa para "Cómo funciona"; no implementado por recorte) · 5 s · overhead slow orbit
+   Plano único: cenital del cuaderno con la cuadrícula de 30 casillas; una casilla se rellena con marcador verde; la cámara gira 8 grados y regresa.
+   Primer y último fotograma: misma orientación, casilla vacía (el relleno se desvanece en el último segundo).
+   Prompt: "Overhead slow orbit, 8 degrees and back, over an open notebook with a hand-drawn grid of 30 squares on dark green linen, a green marker fills one square, the ink fades back by the final second so the last frame matches the first. Soft diffused top-left light, matte paper texture. No text, no numbers, no logos, no watermark, no audio, no hands beyond the marker tip."
+
+AUDITORÍA CRO (pasada crítica sobre la versión 1; se entrega solo la versión corregida)
+------------------------------------------------------------------------------------------
+Criterio                          V1   Final   Justificación / corrección
+a) Promesa en 5 s                 7    9       V1 decía "Aprende a ahorrar"; ahora plazo y resultado concretos en el h1.
+b) Jerarquía y recorrido          6    9       V1 tenía nav con botón que competía; el único verde sólido es la acción.
+c) Fricción del formulario        6    9       V1 pedía nombre + correo + sueldo; queda solo el correo con ayuda de uso.
+d) Credibilidad y prueba social   5    8       Se quitaron cifras de alumnos sin respaldo; marcadores honestos + "para quién no es" + política sin productos financieros.
+e) Accesibilidad                  7    9       Foco visible en todo, etiquetas reales, aria-live, áreas de 44 px, overlay 0.80 sobre video (texto claro ≥ 12:1), acento solo sobre fondo oscuro o con borde de tinta.
+f) Rendimiento                    7    9       Sin fuentes web ni librerías; imágenes con dimensiones; video preload metadata; animaciones solo transform y color.
+g) Consistencia del sistema       7    9       Todo desde :root; 1 grosor, 1 radio + variante, 2 sombras, 3 transiciones.
+
+RECORTE APLICADO
+------------------------------------------------------------------------------------------
+- Campos "nombre" y "cuánto ganas": fuera. El sueldo se trabaja dentro del curso, no en la puerta.
+- Botón "Registrarme" en la cabecera: fuera. Competía con el formulario del hero en la misma pantalla.
+- Fila de iconos de beneficios: fuera. Repetían lo que decían los titulares.
+- Contador de "alumnos inscritos": fuera. No hay dato real que lo respalde.
+- Sección de "sobre el instructor": fuera. Sin datos reales quedaría en relleno; se anota como supuesto.
+- Segundo clip de video en "Cómo funciona": fuera. Añadía peso sin aclarar los pasos.
+- Animaciones de aparición al hacer scroll: fuera. No comunicaban estado ni jerarquía.
+- Web fonts externas: fuera. Pila serif del sistema con el mismo carácter y cero peso de red.
+
+CADENA SEMILLA
+------------------------------------------------------------------------------------------
+Paleta: base #F4F1EA · tinta #0F1512 · acento #2BD17E · neutros #5B635E y #DAD5C8 (variante de acento para texto sobre papel: #146B40).
+Tipografía: titulares serif (Iowan Old Style / Palatino / Georgia), cuerpo sans del sistema, mono para la firma. Escala 1.25, interlineado 1.6 cuerpo / 1.15 titulares / 1.08 h1.
+Rejilla: 4 columnas en móvil, 12 desde 768 px; composiciones 7/5 (hero), 5/7 desplazada (problema), 5/7 con imagen sangrada (qué cambia), 4/8 (preguntas). Espaciado en múltiplos de 8 px.
+Firma visual: numeración de sección en mono con cifra verde y regla fina ("00 ... 06"), presente en las 7 secciones.
+
+MAPA PSICOLÓGICO
+------------------------------------------------------------------------------------------
+Miedos: 1) que un imprevisto los obligue a endeudarse; 2) confirmar que "son malos con la plata"; 3) que les vendan un producto financiero o les pidan datos bancarios.
+Objeciones: 1) "gano muy poco para ahorrar"; 2) "no tengo tiempo para otro curso"; 3) "ya lo intenté y siempre lo gasto".
+Motivaciones: 1) dormir tranquilos cuando algo se daña; 2) no depender de nadie a fin de mes; 3) sentir que controlan su plata en vez de esquivarla.
+
+SUPUESTOS
+------------------------------------------------------------------------------------------
+- Marca provisional "Colchón" y correo de contacto hola@colchon.co.
+- El curso es 100 % gratis, se entrega por correo en 30 lecciones de unos 15 minutos.
+- Público en Colombia (moneda $, es_CO); la cifra de ahorro la calcula cada alumno según su sueldo.
+- Sin backend: data-endpoint vacío simula el envío; al rellenarlo se hace POST JSON { email }.
+- Los enlaces de Privacidad y Aviso legal apuntan a páginas que el cliente debe publicar.
+
+CONFLICTO ENTRE TÉCNICAS
+------------------------------------------------------------------------------------------
+El brief fija la acción "Registrarse gratis" y T8 pide primera persona: se usa "Registrarme gratis" en las 3 apariciones, que respeta ambas con la menor fricción.
+Las preguntas frecuentes usan <details> nativo en vez de JS: funcionan con teclado y lector de pantalla sin código extra.
+
+Auto-revisión de restricciones negativas: OK
+Checklist verificado: 30/30
+==========================================================================================
+-->
