@@ -86,7 +86,7 @@ export function DesktopBridge({ prompt, projectName, onDelivered }: DesktopBridg
     let active = true;
     void (async () => {
       try {
-        const pendientes = await listPendingHandoffs();
+        const pendientes = await listPendingHandoffs('landing');
         if (!active || pendientes.length === 0) return;
         const pendiente = pendientes[0];
         if (!pendiente) return;

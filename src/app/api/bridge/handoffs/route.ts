@@ -14,10 +14,14 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const status = request.nextUrl.searchParams.get('status') ?? 'pendiente';
+    const tipo = request.nextUrl.searchParams.get('tipo');
     const take = Math.min(Number(request.nextUrl.searchParams.get('take') ?? 20), 100);
 
     const handoffs = await prisma.handoff.findMany({
-      where: status === 'todos' ? {} : { status },
+      where: {
+        ...(status === 'todos' ? {} : { status }),
+        ...(tipo === 'landing' || tipo === 'prompt' ? { tipo } : {}),
+      },
       orderBy: { createdAt: 'desc' },
       take,
     });
@@ -44,13 +48,15 @@ export async function POST(request: NextRequest) {
       if (existing) continue;
 
       const handoff = await prisma.handoff.create({
-        data: { code, name: payload.name, prompt: payload.prompt },
+        data: { code, name: payload.name, prompt: payload.prompt, tipo: payload.tipo },
       });
 
-      // Puente por carpeta: deja el encargo escrito para Claude Escritorio.
-      await escribirEncargo(handoff.code, handoff.name, handoff.prompt).catch((error) => {
-        console.error('[ConvertIA][buzon] no se pudo escribir el encargo', error);
-      });
+      // El puente por carpeta solo aplica a las landings.
+      if (handoff.tipo === 'landing') {
+        await escribirEncargo(handoff.code, handoff.name, handoff.prompt).catch((error) => {
+          console.error('[ConvertIA][buzon] no se pudo escribir el encargo', error);
+        });
+      }
 
       return NextResponse.json({ handoff: serializeHandoff(handoff) }, { status: 201 });
     }

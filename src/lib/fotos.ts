@@ -87,10 +87,7 @@ export async function ponerFotosTematicas(html: string): Promise<{ html: string;
   const resultado = html.replace(PICSUM, (original, palabra: string, ancho: string, alto: string) => {
     const encontrada = buscadas.get(`${palabra}|${ancho}x${alto}`);
     
-    // Si Unsplash NO encuentra foto o falla, en lugar de dejar picsum, devolvemos un placeholder que dice "Error Unsplash"
-    if (!encontrada) {
-      return `https://via.placeholder.com/${ancho}x${alto}?text=Error+Unsplash+(${palabra})`;
-    }
+    if (!encontrada) return original;
     
     cambiadas += 1;
     return encontrada;

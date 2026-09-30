@@ -39,6 +39,9 @@ services:
       GENERADOS_DIR: /app/generados
       # Banco de fotos tematicas. Sin clave, se usan fotos de relleno.
       UNSPLASH_ACCESS_KEY: "${UNSPLASH_ACCESS_KEY:-}"
+      # Video de presentador (Tavus). Sin clave, el panel no aparece.
+      TAVUS_API_KEY: "${TAVUS_API_KEY:-}"
+      TAVUS_REPLICA_ID: "${TAVUS_REPLICA_ID:-}"
     volumes:
       - ./buzon:/app/buzon
       - ./generados:/app/generados

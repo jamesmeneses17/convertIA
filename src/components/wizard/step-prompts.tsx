@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowLeft, Combine, Copy, FolderOpen, SplitSquareHorizontal } from 'lucide-react';
+import { ArrowLeft, BrainCircuit, Combine, Copy, FolderOpen, SplitSquareHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -28,6 +28,8 @@ interface StepPromptsProps {
   techniques: TechniqueSlug[];
   mode: CompilationMode;
   masterPrompt: string;
+  /** Prompt redactado por la IA, si se pidio. */
+  promptIA: string | null;
   individualPrompts: IndividualPrompt[];
   pastedCode: PastedCode;
   savedProjectId: string | null;
@@ -42,6 +44,7 @@ export function StepPrompts({
   techniques,
   mode,
   masterPrompt,
+  promptIA,
   individualPrompts,
   pastedCode,
   savedProjectId,
@@ -50,6 +53,9 @@ export function StepPrompts({
   onBack,
   onSaved,
 }: StepPromptsProps) {
+  /** El prompt que se usa de verdad: el de la IA si se pidio, o el compilado. */
+  const promptEfectivo = mode === 'ia' ? (promptIA ?? masterPrompt) : masterPrompt;
+
   const suggestedName = React.useMemo(() => {
     const base = brief.offer.trim() || brief.topic.trim() || 'Proyecto sin titulo';
     return base.length > 70 ? `${base.slice(0, 67)}...` : base;
@@ -72,22 +78,38 @@ export function StepPrompts({
             <div>
               <span className="stage-index">Etapa 03</span>
               <CardTitle className="mt-1 text-2xl">
-                {mode === 'master' ? 'Prompt Maestro compilado' : 'Prompts por tecnica'}
+                {mode === 'ia'
+                  ? 'Prompt Maestro redactado por la IA'
+                  : mode === 'master'
+                    ? 'Prompt Maestro compilado'
+                    : 'Prompts por tecnica'}
               </CardTitle>
               <CardDescription className="mt-1.5 max-w-2xl">
-                {mode === 'master'
-                  ? 'Copialo y pegalo en Claude, ChatGPT, Gemini o DeepSeek. El resultado es equivalente en cualquiera: la calidad vive en el prompt, no en el modelo.'
-                  : 'Un prompt independiente por tecnica, con el mismo brief. Ejecutalos por separado y compara que aporta cada una.'}
+                {mode === 'ia'
+                  ? 'Escrito a medida para este proyecto: la IA eligio el arquetipo de composicion, la direccion tipografica y las secciones. Revisalo antes de usarlo.'
+                  : mode === 'master'
+                    ? 'Copialo y pegalo en Claude, ChatGPT, Gemini o DeepSeek. El resultado es equivalente en cualquiera: la calidad vive en el prompt, no en el modelo.'
+                    : 'Un prompt independiente por tecnica, con el mismo brief. Ejecutalos por separado y compara que aporta cada una.'}
               </CardDescription>
             </div>
             <div className="flex flex-wrap gap-2">
+              {promptIA ? (
+                <Button
+                  size="sm"
+                  variant={mode === 'ia' ? 'default' : 'outline'}
+                  onClick={() => onModeChange('ia')}
+                >
+                  <BrainCircuit />
+                  Version de la IA
+                </Button>
+              ) : null}
               <Button
                 size="sm"
                 variant={mode === 'master' ? 'default' : 'outline'}
                 onClick={() => onModeChange('master')}
               >
                 <Combine />
-                Prompt Maestro
+                Compilado
               </Button>
               <Button
                 size="sm"
@@ -121,10 +143,10 @@ export function StepPrompts({
 
           <Separator />
 
-          {mode === 'master' ? (
+          {mode !== 'separate' ? (
             <PromptViewer
-              prompt={masterPrompt}
-              title="Prompt Maestro"
+              prompt={promptEfectivo}
+              title={mode === 'ia' ? 'Prompt Maestro (version IA)' : 'Prompt Maestro'}
               subtitle="Brief + tecnicas + arquitectura + requisitos tecnicos + formato de salida + checklist."
               filename={suggestedName}
               badge={
@@ -169,7 +191,8 @@ export function StepPrompts({
         code={pastedCode}
         onChange={onPastedCodeChange}
         projectName={suggestedName}
-        prompt={mode === 'master' ? masterPrompt : joinIndividualPrompts(individualPrompts)}
+        prompt={mode === 'separate' ? joinIndividualPrompts(individualPrompts) : promptEfectivo}
+        brief={brief}
       />
 
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -188,7 +211,7 @@ export function StepPrompts({
           <SaveProjectDialog
             brief={brief}
             techniques={techniques}
-            masterPrompt={mode === 'master' ? masterPrompt : joinIndividualPrompts(individualPrompts)}
+            masterPrompt={mode === 'separate' ? joinIndividualPrompts(individualPrompts) : promptEfectivo}
             pastedCode={pastedCode}
             suggestedName={suggestedName}
             existingId={savedProjectId}

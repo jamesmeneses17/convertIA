@@ -26,9 +26,13 @@ export function generateHandoffCode(): string {
 
 export type HandoffStatus = 'pendiente' | 'entregado' | 'cancelado';
 
+/** landing = pide una pagina · prompt = pide que la IA escriba el Prompt Maestro */
+export type HandoffTipo = 'landing' | 'prompt';
+
 export interface HandoffDTO {
   code: string;
   name: string;
+  tipo: HandoffTipo;
   status: HandoffStatus;
   createdAt: string;
   deliveredAt: string | null;
@@ -41,16 +45,23 @@ export interface HandoffWithCodeDTO extends HandoffDTO {
   html: string;
   css: string;
   js: string;
+  /** Texto devuelto cuando el encargo era de tipo prompt. */
+  resultado: string;
 }
 
 function toStatus(value: string): HandoffStatus {
   return value === 'entregado' || value === 'cancelado' ? value : 'pendiente';
 }
 
+function toTipo(value: string): HandoffTipo {
+  return value === 'prompt' ? 'prompt' : 'landing';
+}
+
 export function serializeHandoff(handoff: Handoff): HandoffDTO {
   return {
     code: handoff.code,
     name: handoff.name,
+    tipo: toTipo(handoff.tipo),
     status: toStatus(handoff.status),
     createdAt: handoff.createdAt.toISOString(),
     deliveredAt: handoff.deliveredAt?.toISOString() ?? null,
@@ -66,6 +77,7 @@ export function serializeHandoffWithCode(handoff: Handoff): HandoffWithCodeDTO {
     html: handoff.html ?? '',
     css: handoff.css ?? '',
     js: handoff.js ?? '',
+    resultado: handoff.resultado ?? '',
   };
 }
 
@@ -76,6 +88,17 @@ export function serializeHandoffWithCode(handoff: Handoff): HandoffWithCodeDTO {
 export const createHandoffSchema = z.object({
   name: z.string().trim().min(1).max(120),
   prompt: z.string().trim().min(50, 'El prompt esta vacio o es demasiado corto.').max(200_000),
+  tipo: z.enum(['landing', 'prompt']).default('landing'),
+});
+
+/** Entrega de un encargo de tipo prompt: la IA devuelve el Prompt Maestro. */
+export const deliverPromptSchema = z.object({
+  prompt_maestro: z
+    .string()
+    .trim()
+    .min(500, 'El Prompt Maestro es demasiado corto para ser util.')
+    .max(200_000),
+  notes: z.string().max(500).optional(),
 });
 
 export const deliverHandoffSchema = z
@@ -95,3 +118,4 @@ export const deliverHandoffSchema = z
 
 export type CreateHandoffInput = z.infer<typeof createHandoffSchema>;
 export type DeliverHandoffInput = z.infer<typeof deliverHandoffSchema>;
+export type DeliverPromptInput = z.infer<typeof deliverPromptSchema>;

@@ -8,10 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { TechniqueCard } from '@/components/wizard/technique-card';
+import { PromptGenerator } from '@/components/wizard/prompt-generator';
 import { TECHNIQUES } from '@/lib/techniques';
-import type { CompilationMode, TechniqueSlug } from '@/lib/types';
+import type { Brief, CompilationMode, TechniqueSlug } from '@/lib/types';
 
 interface StepMethodProps {
+  brief: Brief;
+  projectName: string;
+  onPromptListo: (prompt: string, notas: string | null) => void;
   selected: TechniqueSlug[];
   onToggle: (slug: TechniqueSlug, active: boolean) => void;
   onSelectAll: () => void;
@@ -21,6 +25,9 @@ interface StepMethodProps {
 }
 
 export function StepMethod({
+  brief,
+  projectName,
+  onPromptListo,
   selected,
   onToggle,
   onSelectAll,
@@ -88,41 +95,41 @@ export function StepMethod({
 
           <Separator />
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-border bg-muted/40 p-4">
-              <h3 className="flex items-center gap-2 text-sm font-semibold">
-                <SplitSquareHorizontal className="h-4 w-4 text-primary" />
-                Probar tecnicas por separado
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Genera un prompt independiente por cada tecnica activa, con el mismo brief. Sirve para medir
-                el efecto aislado de cada una y comparar resultados (prueba A/B de ingenieria de prompt).
-              </p>
+          <PromptGenerator
+            brief={brief}
+            techniques={selected}
+            projectName={projectName}
+            onPromptListo={onPromptListo}
+          />
+
+          <details className="rounded-lg border border-border bg-muted/30 px-4 py-3">
+            <summary className="cursor-pointer text-xs font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Sin IA a mano: compilar con la plantilla
+            </summary>
+
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              El compilador determinista arma el prompt al instante y siempre igual. Util si Claude no esta
+              disponible o si quieres comparar con la version de la IA, pero la estructura sera la misma en
+              todos los proyectos.
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={() => onCompile('master')}>
+                <Combine />
+                Compilar con plantilla
+              </Button>
               <Button
-                variant="outline"
-                className="mt-4 w-full"
+                size="sm"
+                variant="ghost"
                 onClick={() => onCompile('separate')}
                 disabled={none}
                 title={none ? 'Activa al menos una tecnica' : undefined}
               >
-                Generar {count || ''} {count === 1 ? 'prompt aislado' : 'prompts aislados'}
+                <SplitSquareHorizontal />
+                Un prompt por tecnica
               </Button>
             </div>
-
-            <div className="rounded-lg border border-primary/50 bg-primary/[0.05] p-4">
-              <h3 className="flex items-center gap-2 text-sm font-semibold">
-                <Combine className="h-4 w-4 text-primary" />
-                Combinar en Prompt Maestro
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Fusiona brief, tecnicas, arquitectura de pagina, requisitos tecnicos, formato de salida y
-                checklist de verificacion en un unico super-prompt listo para cualquier IA.
-              </p>
-              <Button className="mt-4 w-full" onClick={() => onCompile('master')}>
-                Compilar Prompt Maestro
-              </Button>
-            </div>
-          </div>
+          </details>
         </CardContent>
       </Card>
 

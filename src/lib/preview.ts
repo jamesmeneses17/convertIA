@@ -193,3 +193,86 @@ export function insertarVideoGenerado(html: string, url: string): { html: string
 
   return { html, cambiado: false };
 }
+
+/**
+ * Propone un guion de presentador a partir del BRIEF, sin esperar a la landing.
+ * Asi el video se puede ir grabando mientras Claude escribe la pagina.
+ */
+export function guionDesdeBrief(brief: {
+  topic: string;
+  offer: string;
+  audience: string;
+  cta: string;
+}): string {
+  const oferta = brief.offer.trim();
+  if (!oferta) return '';
+
+  const publico = brief.audience.trim();
+  const accion = brief.cta.trim();
+
+  return [
+    `Hola. Si ${publico ? publico.toLowerCase().replace(/^(los|las)\s+/, '') : 'esto va contigo'}, escucha esto.`,
+    `${oferta}.`,
+    'Sin letra pequena y sin compromiso: lo miras, y si no te encaja, lo dejas.',
+    accion ? `Cuando quieras, ${accion.toLowerCase()}. Te respondemos el mismo dia.` : 'Cuando quieras, escribenos.',
+  ].join(' ');
+}
+
+/**
+ * Propone un guion de presentador leyendo el titular y el subtitular del hero.
+ * Se escribe como se habla, porque lo va a decir una persona a camara.
+ */
+export function extraerGuionPresentador(html: string): string {
+  if (!html) return '';
+
+  const limpiar = (texto: string) =>
+    texto
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&[a-z]+;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const h1 = html.match(/<h1[^>]*>([\s\S]{3,300}?)<\/h1>/i);
+  const titular = h1?.[1] ? limpiar(h1[1]) : '';
+  if (!titular) return '';
+
+  // El primer parrafo despues del h1 suele ser el subtitular de apoyo.
+  const resto = html.slice(html.indexOf(h1?.[0] ?? '') + (h1?.[0]?.length ?? 0));
+  const p = resto.match(/<p[^>]*>([\s\S]{20,400}?)<\/p>/i);
+  const apoyo = p?.[1] ? limpiar(p[1]) : '';
+
+  return [
+    `Hola. ${titular}.`,
+    apoyo,
+    'Si te encaja, dale al boton y lo vemos juntos. Sin compromiso.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
+/** Coloca el video del presentador justo despues de la primera seccion. */
+export function insertarPresentador(html: string, url: string): { html: string; cambiado: boolean } {
+  if (!html.trim()) return { html, cambiado: false };
+
+  const bloque = [
+    '',
+    '<!-- Video de presentador generado con Tavus -->',
+    '<section aria-label="Presentacion en video" style="padding:48px 24px;display:grid;place-items:center">',
+    `  <video src="${url}" controls playsinline preload="metadata" style="width:100%;max-width:720px;border-radius:8px;display:block"></video>`,
+    '</section>',
+    '',
+  ].join('\n');
+
+  // Preferimos colocarlo despues de la primera seccion, que suele ser el hero.
+  const finPrimeraSeccion = html.search(/<\/section>/i);
+  if (finPrimeraSeccion !== -1) {
+    const corte = finPrimeraSeccion + '</section>'.length;
+    return { html: html.slice(0, corte) + bloque + html.slice(corte), cambiado: true };
+  }
+
+  if (/<\/main>/i.test(html)) {
+    return { html: html.replace(/<\/main>/i, `${bloque}</main>`), cambiado: true };
+  }
+
+  return { html, cambiado: false };
+}

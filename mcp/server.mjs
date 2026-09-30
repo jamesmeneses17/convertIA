@@ -85,7 +85,7 @@ server.registerTool(
         );
       }
       const lista = handoffs
-        .map((item) => `- ${item.code} :: ${item.name} (creado ${item.createdAt})`)
+        .map((item) => `- ${item.code} [${(item.tipo ?? 'landing').toUpperCase()}] :: ${item.name} (creado ${item.createdAt})`)
         .join('\n');
       return texto(`Encargos pendientes en ConvertIA:\n${lista}`);
     } catch (error) {
@@ -128,6 +128,23 @@ server.registerTool(
       }
 
       const { handoff } = await api(`/api/bridge/handoffs/${encodeURIComponent(code)}`);
+
+      if (handoff.tipo === 'prompt') {
+        return texto(
+          [
+            `ENCARGO ${handoff.code} :: ${handoff.name}`,
+            'TIPO: escribir un PROMPT MAESTRO (no una landing)',
+            '',
+            'Lee el encargo de abajo y redacta el Prompt Maestro que pide.',
+            'NO escribas HTML: entregas un documento de texto con instrucciones.',
+            `Cuando lo tengas, usa la herramienta entregar_prompt con codigo "${handoff.code}".`,
+            '',
+            '--- INICIO DEL ENCARGO ---',
+            handoff.prompt,
+            '--- FIN DEL ENCARGO ---',
+          ].join('\n'),
+        );
+      }
 
       return texto(
         [
@@ -188,7 +205,44 @@ server.registerTool(
 );
 
 // ---------------------------------------------------------------------------
-//  4. Diagnostico
+//  4. Devolver el Prompt Maestro redactado
+// ---------------------------------------------------------------------------
+server.registerTool(
+  'entregar_prompt',
+  {
+    title: 'Entregar el Prompt Maestro redactado',
+    description:
+      'Envia a ConvertIA el Prompt Maestro que has redactado para un encargo de tipo prompt. ' +
+      'Es texto plano con instrucciones, NO codigo HTML. Llamala una sola vez por encargo.',
+    inputSchema: {
+      codigo: z.string().describe('Codigo del encargo, por ejemplo LP-7K2Q.'),
+      prompt_maestro: z
+        .string()
+        .describe('El Prompt Maestro completo, en texto plano, listo para pegar en cualquier IA.'),
+      notas: z
+        .string()
+        .optional()
+        .describe('Una linea con el arquetipo y la direccion de arte que elegiste.'),
+    },
+  },
+  async ({ codigo, prompt_maestro, notas }) => {
+    try {
+      const { mensaje } = await api(
+        `/api/bridge/handoffs/${encodeURIComponent(codigo.trim().toUpperCase())}/deliver-prompt`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ prompt_maestro, notes: notas }),
+        },
+      );
+      return texto(mensaje ?? 'Prompt Maestro entregado en ConvertIA.');
+    } catch (error) {
+      return fallo(error.message);
+    }
+  },
+);
+
+// ---------------------------------------------------------------------------
+//  5. Diagnostico
 // ---------------------------------------------------------------------------
 server.registerTool(
   'estado_convertia',

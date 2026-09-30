@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DesktopBridge } from '@/components/wizard/desktop-bridge';
 import { VideoGenerator } from '@/components/wizard/video-generator';
+import { PresenterGenerator } from '@/components/wizard/presenter-generator';
 import { Textarea } from '@/components/ui/textarea';
 import { codeStats, composePreviewDocument, isCodeEmpty, splitAiResponse } from '@/lib/preview';
 import {
@@ -30,7 +31,7 @@ import {
   streamGeneration,
   type GenerationStatus,
 } from '@/lib/generate-client';
-import type { PastedCode } from '@/lib/types';
+import type { Brief, PastedCode } from '@/lib/types';
 import { cn, downloadTextFile, slugify } from '@/lib/utils';
 
 type Viewport = 'mobile' | 'tablet' | 'desktop';
@@ -48,9 +49,10 @@ interface CodePreviewProps {
   projectName: string;
   /** Prompt que se envia si esta activo el modo de generacion integrada. */
   prompt: string;
+  brief: Brief;
 }
 
-export function CodePreview({ code, onChange, projectName, prompt }: CodePreviewProps) {
+export function CodePreview({ code, onChange, projectName, prompt, brief }: CodePreviewProps) {
   const [aiResponse, setAiResponse] = React.useState('');
   const [viewport, setViewport] = React.useState<Viewport>('desktop');
   const [reloadKey, setReloadKey] = React.useState(0);
@@ -122,7 +124,19 @@ export function CodePreview({ code, onChange, projectName, prompt }: CodePreview
     }
   }
 
-  const previewDoc = React.useMemo(() => composePreviewDocument(code), [code]);
+  /**
+   * El documento se recalcula 400 ms despues de la ultima tecla. Editar el HTML
+   * actualiza la vista sola, sin pulsar nada y sin gastar tokens, pero sin
+   * rehacer el iframe en cada pulsacion.
+   */
+  const [codigoEstable, setCodigoEstable] = React.useState(code);
+
+  React.useEffect(() => {
+    const espera = window.setTimeout(() => setCodigoEstable(code), 400);
+    return () => window.clearTimeout(espera);
+  }, [code]);
+
+  const previewDoc = React.useMemo(() => composePreviewDocument(codigoEstable), [codigoEstable]);
   const empty = isCodeEmpty(code);
   const stats = React.useMemo(() => codeStats(code), [code]);
 
@@ -256,6 +270,14 @@ export function CodePreview({ code, onChange, projectName, prompt }: CodePreview
               onInserted={() => setReloadKey((key) => key + 1)}
             />
 
+            <PresenterGenerator
+              brief={brief}
+              code={code}
+              onChange={onChange}
+              projectName={projectName}
+              onInserted={() => setReloadKey((key) => key + 1)}
+            />
+
             <Textarea
               value={aiResponse}
               onChange={(event) => setAiResponse(event.target.value)}
@@ -289,7 +311,18 @@ export function CodePreview({ code, onChange, projectName, prompt }: CodePreview
           </TabsContent>
 
           {editors.map((editor) => (
-            <TabsContent key={editor.key} value={editor.key}>
+            <TabsContent key={editor.key} value={editor.key} className="space-y-2">
+              {editor.key !== 'html' && !code[editor.key].trim() && code.html.trim() ? (
+                <p className="rounded-md border border-dashed border-border bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+                  Esta pestana esta vacia porque la landing es un{' '}
+                  <span className="font-medium text-foreground">archivo unico</span>: el{' '}
+                  {editor.label} va dentro del HTML, en su etiqueta{' '}
+                  <code className="rounded bg-muted px-1 py-0.5 font-mono">
+                    {editor.key === 'css' ? '<style>' : '<script>'}
+                  </code>
+                  . Editalo desde la pestana HTML. Lo que escribas aqui se anadira aparte.
+                </p>
+              ) : null}
               <Textarea
                 value={code[editor.key]}
                 onChange={(event) => onChange({ ...code, [editor.key]: event.target.value })}

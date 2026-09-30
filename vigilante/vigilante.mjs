@@ -25,8 +25,10 @@ const INTERVALO_MS = Number(process.env.VIGILANTE_INTERVALO ?? 10_000);
 const CONFIG_MCP = path.join(AQUI, 'mcp-convertia.json');
 
 const INSTRUCCION =
-  'Genera la landing pendiente de ConvertIA. IMPORTANTE: no escribas el HTML en tu respuesta; ' +
-  'entregalo llamando a la herramienta entregar_landing. Responde solo con una linea de resumen.';
+  'Atiende el encargo pendiente de ConvertIA. Llama primero a obtener_encargo: te dira si pide una ' +
+  'LANDING o un PROMPT MAESTRO. Si pide landing, entregala con entregar_landing; si pide prompt, ' +
+  'entregalo con entregar_prompt. IMPORTANTE: no escribas el resultado en tu respuesta, va dentro ' +
+  'de la herramienta. Responde solo con una linea de resumen.';
 
 /**
  * Localiza el CLI de Claude.
@@ -56,6 +58,7 @@ const HERRAMIENTAS = [
   'mcp__convertia__listar_encargos',
   'mcp__convertia__obtener_encargo',
   'mcp__convertia__entregar_landing',
+  'mcp__convertia__entregar_prompt',
   'mcp__convertia__estado_convertia',
 ];
 

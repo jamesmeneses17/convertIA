@@ -66,9 +66,27 @@ export async function fetchBridgeMode(): Promise<BridgeMode> {
   }
 }
 
-/** Encargos pendientes, para recuperar la espera despues de recargar la pagina. */
-export async function listPendingHandoffs(): Promise<HandoffDTO[]> {
-  const response = await fetch('/api/bridge/handoffs?status=pendiente&take=1', { cache: 'no-store' });
+/** Deja un encargo para que la IA redacte el Prompt Maestro de este proyecto. */
+export async function createPromptHandoff(name: string, metaPrompt: string): Promise<HandoffDTO> {
+  const response = await fetch('/api/bridge/handoffs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, prompt: metaPrompt, tipo: 'prompt' }),
+  });
+  if (!response.ok) throw await readError(response);
+  const payload = (await response.json()) as { handoff: HandoffDTO };
+  return payload.handoff;
+}
+
+/**
+ * Encargos pendientes, para recuperar la espera despues de recargar la pagina
+ * o de irse al banco de proyectos y volver.
+ */
+export async function listPendingHandoffs(tipo?: 'landing' | 'prompt'): Promise<HandoffDTO[]> {
+  const filtro = tipo ? `&tipo=${tipo}` : '';
+  const response = await fetch(`/api/bridge/handoffs?status=pendiente&take=1${filtro}`, {
+    cache: 'no-store',
+  });
   if (!response.ok) throw await readError(response);
   const payload = (await response.json()) as { handoffs: HandoffDTO[] };
   return payload.handoffs;

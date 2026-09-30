@@ -55,7 +55,8 @@ export const MCP_TOOLS: readonly McpToolDefinition[] = [
       const lista = handoffs
         .map((item) => {
           const dto = serializeHandoff(item);
-          return `- ${dto.code} :: ${dto.name} (creado ${dto.createdAt})`;
+          const etiqueta = dto.tipo === 'prompt' ? '[PROMPT]' : '[LANDING]';
+          return `- ${dto.code} ${etiqueta} :: ${dto.name} (creado ${dto.createdAt})`;
         })
         .join('\n');
 
@@ -100,8 +101,24 @@ export const MCP_TOOLS: readonly McpToolDefinition[] = [
 
       const dto = serializeHandoffWithCode(handoff);
 
+      if (dto.tipo === 'prompt') {
+        return [
+          `ENCARGO ${dto.code} :: ${dto.name}`,
+          'TIPO: escribir un PROMPT MAESTRO (no una landing)',
+          '',
+          'Lee el encargo de abajo y redacta el Prompt Maestro que pide.',
+          'NO escribas HTML: lo que entregas es un documento de texto con instrucciones.',
+          `Cuando lo tengas, entregalo con la herramienta entregar_prompt usando el codigo "${dto.code}".`,
+          '',
+          '--- INICIO DEL ENCARGO ---',
+          dto.prompt,
+          '--- FIN DEL ENCARGO ---',
+        ].join('\n');
+      }
+
       return [
         `ENCARGO ${dto.code} :: ${dto.name}`,
+        'TIPO: construir una LANDING PAGE',
         `Estado: ${dto.status}`,
         '',
         'Cumple el siguiente Prompt Maestro y, cuando tengas el codigo final,',
@@ -172,6 +189,64 @@ export const MCP_TOOLS: readonly McpToolDefinition[] = [
 
       const nota = fotos.cambiadas > 0 ? ` Se cambiaron ${fotos.cambiadas} fotos por imagenes del tema.` : '';
       return `Landing entregada en ConvertIA. Ya se esta viendo en el Visor de Codigo del encargo ${codigo}.${nota}`;
+    },
+  },
+
+  {
+    name: 'entregar_prompt',
+    title: 'Entregar el Prompt Maestro redactado',
+    description:
+      'Envia a ConvertIA el Prompt Maestro que has redactado para un encargo de tipo prompt. ' +
+      'Es texto plano con instrucciones, NO codigo HTML. Llama a esta herramienta una sola vez.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        codigo: { type: 'string', description: 'Codigo del encargo, por ejemplo LP-7K2Q.' },
+        prompt_maestro: {
+          type: 'string',
+          description: 'El Prompt Maestro completo, en texto plano, listo para pegar en cualquier IA.',
+        },
+        notas: {
+          type: 'string',
+          description: 'Una linea con el arquetipo y la direccion de arte que elegiste.',
+        },
+      },
+      required: ['codigo', 'prompt_maestro'],
+      additionalProperties: false,
+    },
+    handler: async (args) => {
+      const codigo = readString(args, 'codigo')?.toUpperCase();
+      if (!codigo) throw new McpToolError('Falta el codigo del encargo.');
+
+      const texto = readString(args, 'prompt_maestro');
+      if (!texto || texto.length < 500) {
+        throw new McpToolError(
+          'El Prompt Maestro esta vacio o es demasiado corto. Debe ser un documento completo.',
+        );
+      }
+
+      const handoff = await prisma.handoff.findUnique({ where: { code: codigo } });
+      if (!handoff) throw new McpToolError(`No existe ningun encargo con el codigo ${codigo}.`);
+      if (handoff.tipo !== 'prompt') {
+        throw new McpToolError(
+          `El encargo ${codigo} pide una landing, no un Prompt Maestro. Usa entregar_landing.`,
+        );
+      }
+      if (handoff.status === 'cancelado') {
+        throw new McpToolError(`El encargo ${codigo} fue cancelado desde ConvertIA.`);
+      }
+
+      await prisma.handoff.update({
+        where: { code: codigo },
+        data: {
+          resultado: texto,
+          notes: readString(args, 'notas') ?? null,
+          status: 'entregado',
+          deliveredAt: new Date(),
+        },
+      });
+
+      return `Prompt Maestro entregado (${texto.length} caracteres). Ya se ve en ConvertIA, encargo ${codigo}.`;
     },
   },
 

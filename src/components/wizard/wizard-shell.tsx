@@ -24,6 +24,8 @@ interface Draft {
   mode: CompilationMode;
   pastedCode: PastedCode;
   compiledAt: string | null;
+  /** Prompt redactado por la IA, si se pidio. */
+  promptIA: string | null;
   savedProjectId: string | null;
   /** Brief con el que se guardo, para saber si ya es otro proyecto. */
   savedSignature: string | null;
@@ -39,9 +41,10 @@ function readDraft(): Draft | null {
       step: parsed.step === 2 || parsed.step === 3 ? parsed.step : 1,
       brief: { ...EMPTY_BRIEF, ...parsed.brief },
       techniques: normalizeTechniques(parsed.techniques),
-      mode: parsed.mode === 'separate' ? 'separate' : 'master',
+      mode: parsed.mode === 'separate' || parsed.mode === 'ia' ? parsed.mode : 'master',
       pastedCode: { ...EMPTY_CODE, ...(parsed.pastedCode ?? {}) },
       compiledAt: typeof parsed.compiledAt === 'string' ? parsed.compiledAt : null,
+      promptIA: typeof parsed.promptIA === 'string' ? parsed.promptIA : null,
       savedProjectId: typeof parsed.savedProjectId === 'string' ? parsed.savedProjectId : null,
       savedSignature: typeof parsed.savedSignature === 'string' ? parsed.savedSignature : null,
     };
@@ -57,6 +60,7 @@ export function WizardShell() {
   const [mode, setMode] = React.useState<CompilationMode>('master');
   const [pastedCode, setPastedCode] = React.useState<PastedCode>(EMPTY_CODE);
   const [compiledAt, setCompiledAt] = React.useState<string | null>(null);
+  const [promptIA, setPromptIA] = React.useState<string | null>(null);
   const [savedProjectId, setSavedProjectId] = React.useState<string | null>(null);
   const [savedSignature, setSavedSignature] = React.useState<string | null>(null);
   const [hydrated, setHydrated] = React.useState(false);
@@ -71,6 +75,7 @@ export function WizardShell() {
       setMode(draft.mode);
       setPastedCode(draft.pastedCode);
       setCompiledAt(draft.compiledAt);
+      setPromptIA(draft.promptIA);
       setSavedProjectId(draft.savedProjectId);
       setSavedSignature(draft.savedSignature);
     }
@@ -111,6 +116,7 @@ export function WizardShell() {
       mode,
       pastedCode,
       compiledAt,
+      promptIA,
       savedProjectId,
       savedSignature,
     };
@@ -119,7 +125,18 @@ export function WizardShell() {
     } catch {
       /* cuota o modo privado: el borrador solo vive en memoria */
     }
-  }, [hydrated, step, brief, techniques, mode, pastedCode, compiledAt, savedProjectId, savedSignature]);
+  }, [
+    hydrated,
+    step,
+    brief,
+    techniques,
+    mode,
+    pastedCode,
+    compiledAt,
+    promptIA,
+    savedProjectId,
+    savedSignature,
+  ]);
 
   /** Identifica el proyecto por su brief: si cambia, ya es otro proyecto. */
   const firmaBrief = `${brief.topic.trim()}|${brief.offer.trim()}`;
@@ -151,6 +168,12 @@ export function WizardShell() {
     [brief, techniques, compiledDate],
   );
 
+  /** Nombre corto para bautizar encargos y archivos. */
+  const nombreProyecto = React.useMemo(() => {
+    const base = brief.offer.trim() || brief.topic.trim() || 'Proyecto sin titulo';
+    return base.length > 70 ? `${base.slice(0, 67)}...` : base;
+  }, [brief.offer, brief.topic]);
+
   const briefComplete = isBriefComplete(brief);
   const unlocked: Record<StepId, boolean> = {
     1: true,
@@ -176,6 +199,18 @@ export function WizardShell() {
     toast.success('Proyecto cargado', { description: `"${project.name}" listo para recompilar.` });
   }
 
+  /** La IA devolvio el Prompt Maestro: lo guardamos y pasamos a la Etapa 03. */
+  function handlePromptListo(texto: string, notas: string | null) {
+    setPromptIA(texto);
+    setMode('ia');
+    setCompiledAt(new Date().toISOString());
+    setStep(3);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.success('Prompt Maestro redactado por la IA', {
+      description: notas ?? `${texto.length.toLocaleString('es-CO')} caracteres, escrito para este brief.`,
+    });
+  }
+
   function handleBriefChange(field: keyof Brief, value: string) {
     setBrief((prev) => ({ ...prev, [field]: value }));
   }
@@ -187,6 +222,7 @@ export function WizardShell() {
   }
 
   function handleCompile(nextMode: CompilationMode) {
+    if (nextMode === 'ia') return;
     if (!briefComplete) {
       setStep(1);
       toast.error('Completa el brief antes de compilar.');
@@ -224,6 +260,9 @@ export function WizardShell() {
 
       {step === 2 ? (
         <StepMethod
+          brief={brief}
+          projectName={nombreProyecto}
+          onPromptListo={handlePromptListo}
           selected={techniques}
           onToggle={handleToggleTechnique}
           onSelectAll={() => setTechniques([...TECHNIQUE_SLUGS])}
@@ -239,12 +278,14 @@ export function WizardShell() {
           techniques={techniques}
           mode={mode}
           masterPrompt={masterPrompt}
+          promptIA={promptIA}
           individualPrompts={individualPrompts}
           pastedCode={pastedCode}
           savedProjectId={savedProjectId}
           onPastedCodeChange={setPastedCode}
           onModeChange={(next) => {
             if (next === 'separate' && techniques.length === 0) return;
+            if (next === 'ia' && !promptIA) return;
             setMode(next);
           }}
           onBack={() => handleNavigate(2)}

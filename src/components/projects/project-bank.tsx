@@ -7,7 +7,11 @@ import {
   Copy,
   Eye,
   FolderOpen,
+  Download,
+  ImageOff,
   Loader2,
+  Maximize2,
+  Monitor,
   Search,
   SquarePen,
   Trash2,
@@ -28,7 +32,56 @@ import { Input } from '@/components/ui/input';
 import { PromptViewer } from '@/components/wizard/prompt-viewer';
 import { TECHNIQUES, getTechnique } from '@/lib/techniques';
 import type { ProjectDTO } from '@/lib/types';
-import { copyToClipboard, formatDate } from '@/lib/utils';
+import { composePreviewDocument } from '@/lib/preview';
+import { copyToClipboard, downloadTextFile, formatDate, slugify } from '@/lib/utils';
+
+/**
+ * Miniatura real de la landing: monta el documento en un iframe con el
+ * viewport de un escritorio y lo encoge. No es una captura, es la pagina
+ * de verdad, asi que siempre coincide con lo guardado.
+ */
+function Miniatura({ project, onOpen }: { project: ProjectDTO; onOpen: () => void }) {
+  const documento = React.useMemo(
+    () => (project.pastedCode ? composePreviewDocument(project.pastedCode) : ''),
+    [project.pastedCode],
+  );
+
+  if (!documento) {
+    return (
+      <div className="grid aspect-[16/10] w-full place-items-center rounded-md border border-dashed border-border bg-muted/40">
+        <div className="text-center">
+          <ImageOff className="mx-auto h-5 w-5 text-muted-foreground" aria-hidden />
+          <p className="mt-1.5 text-[0.68rem] text-muted-foreground">Sin codigo guardado</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      title="Ver la landing en grande"
+      className="group relative block aspect-[16/10] w-full overflow-hidden rounded-md border border-border bg-white"
+    >
+      <iframe
+        title={`Vista previa de ${project.name}`}
+        srcDoc={documento}
+        sandbox=""
+        loading="lazy"
+        tabIndex={-1}
+        aria-hidden
+        className="pointer-events-none absolute left-0 top-0 h-[250%] w-[250%] origin-top-left scale-[0.4] border-0"
+      />
+      <span className="absolute inset-0 grid place-items-center bg-tinta/0 opacity-0 transition-opacity group-hover:bg-black/45 group-hover:opacity-100 group-focus-visible:bg-black/45 group-focus-visible:opacity-100">
+        <span className="flex items-center gap-1.5 rounded-md bg-background px-3 py-1.5 text-xs font-medium shadow">
+          <Maximize2 className="h-3.5 w-3.5" />
+          Ver en grande
+        </span>
+      </span>
+    </button>
+  );
+}
 
 interface ProjectBankProps {
   initialProjects: ProjectDTO[];
@@ -38,6 +91,7 @@ export function ProjectBank({ initialProjects }: ProjectBankProps) {
   const [projects, setProjects] = React.useState(initialProjects);
   const [query, setQuery] = React.useState('');
   const [inspected, setInspected] = React.useState<ProjectDTO | null>(null);
+  const [vistaPrevia, setVistaPrevia] = React.useState<ProjectDTO | null>(null);
   const [pendingDelete, setPendingDelete] = React.useState<ProjectDTO | null>(null);
   const [deleting, setDeleting] = React.useState(false);
 
@@ -148,6 +202,8 @@ export function ProjectBank({ initialProjects }: ProjectBankProps) {
             </CardHeader>
 
             <CardContent className="flex flex-1 flex-col gap-4">
+              <Miniatura project={project} onOpen={() => setVistaPrevia(project)} />
+
               <dl className="grid gap-1.5 text-xs">
                 {[
                   { label: 'Tema', value: project.topic },
@@ -176,7 +232,16 @@ export function ProjectBank({ initialProjects }: ProjectBankProps) {
               ) : null}
 
               <div className="mt-auto flex flex-wrap gap-2 pt-1">
-                <Button size="sm" variant="outline" onClick={() => setInspected(project)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setVistaPrevia(project)}
+                  disabled={!project.pastedCode}
+                >
+                  <Monitor />
+                  Ver landing
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setInspected(project)}>
                   <Eye />
                   Ver prompt
                 </Button>
@@ -222,6 +287,46 @@ export function ProjectBank({ initialProjects }: ProjectBankProps) {
               collapsedHeight={360}
             />
           ) : null}
+        </DialogContent>
+      </Dialog>
+
+      {/* ---------- La landing a tamano real ---------- */}
+      <Dialog open={vistaPrevia !== null} onOpenChange={(open) => !open && setVistaPrevia(null)}>
+        <DialogContent className="max-w-6xl">
+          <DialogHeader>
+            <DialogTitle className="truncate pr-4">{vistaPrevia?.name}</DialogTitle>
+            <DialogDescription>
+              {vistaPrevia?.topic} · guardada el {vistaPrevia ? formatDate(vistaPrevia.createdAt) : ''}
+            </DialogDescription>
+          </DialogHeader>
+
+          {vistaPrevia?.pastedCode ? (
+            <iframe
+              title={`Landing de ${vistaPrevia.name}`}
+              srcDoc={composePreviewDocument(vistaPrevia.pastedCode)}
+              sandbox="allow-scripts allow-forms allow-popups"
+              referrerPolicy="no-referrer"
+              className="h-[70vh] w-full rounded-md border border-border bg-white"
+            />
+          ) : null}
+
+          <DialogFooter className="sm:justify-between">
+            <span className="font-mono text-[0.68rem] text-muted-foreground">
+              Se ve tal cual quedo guardada, con su JavaScript funcionando.
+            </span>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (!vistaPrevia?.pastedCode) return;
+                const documento = composePreviewDocument(vistaPrevia.pastedCode);
+                downloadTextFile(`${slugify(vistaPrevia.name) || 'landing'}.html`, documento, 'text/html');
+                toast.success('index.html descargado');
+              }}
+            >
+              <Download />
+              Descargar HTML
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

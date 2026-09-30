@@ -58,6 +58,12 @@ model Handoff {
   /// Resumen en una linea que deja Claude al entregar
   notes       String?
 
+  /// landing = pide una pagina | prompt = pide que la IA escriba el Prompt Maestro
+  tipo        String    @default("landing")
+
+  /// Texto devuelto cuando el encargo es de tipo prompt
+  resultado   String?
+
   /// pendiente | entregado | cancelado
   status      String    @default("pendiente")
 
@@ -66,5 +72,6 @@ model Handoff {
   deliveredAt DateTime?
 
   @@index([status, createdAt])
+  @@index([tipo, status])
   @@map("handoffs")
 }

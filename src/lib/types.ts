@@ -75,7 +75,8 @@ export interface IndividualPrompt {
   prompt: string;
 }
 
-export type CompilationMode = 'master' | 'separate';
+/** master = compilador determinista · separate = uno por tecnica · ia = redactado por la IA */
+export type CompilationMode = 'master' | 'separate' | 'ia';
 
 export interface ProjectDTO {
   id: string;
