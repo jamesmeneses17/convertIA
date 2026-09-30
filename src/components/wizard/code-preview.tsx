@@ -57,6 +57,13 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
   const [viewport, setViewport] = React.useState<Viewport>('desktop');
   const [reloadKey, setReloadKey] = React.useState(0);
 
+  /**
+   * Sube cada vez que se pide una landing. El generador de presentador lo
+   * escucha para empezar a grabar el video EN PARALELO, en vez de esperar a que
+   * la pagina este lista.
+   */
+  const [pedidoLanding, setPedidoLanding] = React.useState(0);
+
   // --- Modo de generacion integrada (solo si el servidor tiene API key) ---
   const [status, setStatus] = React.useState<GenerationStatus>({ enabled: false, model: null });
   const [generating, setGenerating] = React.useState(false);
@@ -80,6 +87,7 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
     abortRef.current = controller;
     setGenerating(true);
     setAiResponse('');
+    setPedidoLanding((n) => n + 1);
 
     const toastId = toast.loading('Generando la landing...', {
       description: `Claude esta escribiendo el codigo (${status.model ?? 'modelo por defecto'}).`,
@@ -228,6 +236,7 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
             <DesktopBridge
               prompt={prompt}
               projectName={projectName}
+              onEncargoCreado={() => setPedidoLanding((n) => n + 1)}
               onDelivered={(delivered, handoffCode, notes) => {
                 onChange(delivered);
                 setReloadKey((key) => key + 1);
@@ -275,6 +284,7 @@ export function CodePreview({ code, onChange, projectName, prompt, brief }: Code
               code={code}
               onChange={onChange}
               projectName={projectName}
+              arrancarEn={pedidoLanding}
               onInserted={() => setReloadKey((key) => key + 1)}
             />
 

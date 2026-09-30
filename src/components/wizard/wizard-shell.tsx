@@ -26,6 +26,10 @@ interface Draft {
   compiledAt: string | null;
   /** Prompt redactado por la IA, si se pidio. */
   promptIA: string | null;
+  /** Version editada a mano del prompt, si el usuario lo retoco. */
+  promptEditado: string | null;
+  /** Modo rapido: prompts mas cortos y sin anexos, para no esperar 8 minutos. */
+  rapido: boolean;
   savedProjectId: string | null;
   /** Brief con el que se guardo, para saber si ya es otro proyecto. */
   savedSignature: string | null;
@@ -45,6 +49,8 @@ function readDraft(): Draft | null {
       pastedCode: { ...EMPTY_CODE, ...(parsed.pastedCode ?? {}) },
       compiledAt: typeof parsed.compiledAt === 'string' ? parsed.compiledAt : null,
       promptIA: typeof parsed.promptIA === 'string' ? parsed.promptIA : null,
+      promptEditado: typeof parsed.promptEditado === 'string' ? parsed.promptEditado : null,
+      rapido: parsed.rapido === true,
       savedProjectId: typeof parsed.savedProjectId === 'string' ? parsed.savedProjectId : null,
       savedSignature: typeof parsed.savedSignature === 'string' ? parsed.savedSignature : null,
     };
@@ -61,6 +67,8 @@ export function WizardShell() {
   const [pastedCode, setPastedCode] = React.useState<PastedCode>(EMPTY_CODE);
   const [compiledAt, setCompiledAt] = React.useState<string | null>(null);
   const [promptIA, setPromptIA] = React.useState<string | null>(null);
+  const [promptEditado, setPromptEditado] = React.useState<string | null>(null);
+  const [rapido, setRapido] = React.useState(false);
   const [savedProjectId, setSavedProjectId] = React.useState<string | null>(null);
   const [savedSignature, setSavedSignature] = React.useState<string | null>(null);
   const [hydrated, setHydrated] = React.useState(false);
@@ -76,6 +84,8 @@ export function WizardShell() {
       setPastedCode(draft.pastedCode);
       setCompiledAt(draft.compiledAt);
       setPromptIA(draft.promptIA);
+      setPromptEditado(draft.promptEditado);
+      setRapido(draft.rapido);
       setSavedProjectId(draft.savedProjectId);
       setSavedSignature(draft.savedSignature);
     }
@@ -117,6 +127,8 @@ export function WizardShell() {
       pastedCode,
       compiledAt,
       promptIA,
+      promptEditado,
+      rapido,
       savedProjectId,
       savedSignature,
     };
@@ -134,6 +146,8 @@ export function WizardShell() {
     pastedCode,
     compiledAt,
     promptIA,
+    promptEditado,
+    rapido,
     savedProjectId,
     savedSignature,
   ]);
@@ -159,8 +173,8 @@ export function WizardShell() {
   );
 
   const masterPrompt = React.useMemo(
-    () => buildMasterPrompt(brief, techniques, { compiledAt: compiledDate }),
-    [brief, techniques, compiledDate],
+    () => buildMasterPrompt(brief, techniques, { compiledAt: compiledDate, rapido }),
+    [brief, techniques, compiledDate, rapido],
   );
 
   const individualPrompts = React.useMemo(
@@ -202,6 +216,7 @@ export function WizardShell() {
   /** La IA devolvio el Prompt Maestro: lo guardamos y pasamos a la Etapa 03. */
   function handlePromptListo(texto: string, notas: string | null) {
     setPromptIA(texto);
+    setPromptEditado(null);
     setMode('ia');
     setCompiledAt(new Date().toISOString());
     setStep(3);
@@ -262,6 +277,8 @@ export function WizardShell() {
         <StepMethod
           brief={brief}
           projectName={nombreProyecto}
+          rapido={rapido}
+          onRapidoChange={setRapido}
           onPromptListo={handlePromptListo}
           selected={techniques}
           onToggle={handleToggleTechnique}
@@ -279,6 +296,8 @@ export function WizardShell() {
           mode={mode}
           masterPrompt={masterPrompt}
           promptIA={promptIA}
+          promptEditado={promptEditado}
+          onPromptEditado={setPromptEditado}
           individualPrompts={individualPrompts}
           pastedCode={pastedCode}
           savedProjectId={savedProjectId}

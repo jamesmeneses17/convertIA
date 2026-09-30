@@ -36,9 +36,19 @@ interface DesktopBridgeProps {
   prompt: string;
   projectName: string;
   onDelivered: (code: PastedCode, handoffCode: string, notes: string | null) => void;
+  /**
+   * Se dispara justo al dejar el encargo en el buzon. Sirve para arrancar en
+   * paralelo lo que no depende de la landing, como el video del presentador.
+   */
+  onEncargoCreado?: (handoffCode: string) => void;
 }
 
-export function DesktopBridge({ prompt, projectName, onDelivered }: DesktopBridgeProps) {
+export function DesktopBridge({
+  prompt,
+  projectName,
+  onDelivered,
+  onEncargoCreado,
+}: DesktopBridgeProps) {
   const [code, setCode] = React.useState<string | null>(null);
   const [creating, setCreating] = React.useState(false);
   const [waiting, setWaiting] = React.useState(false);
@@ -165,6 +175,7 @@ export function DesktopBridge({ prompt, projectName, onDelivered }: DesktopBridg
     try {
       const handoff = await createHandoff(projectName || 'Landing sin titulo', prompt);
       setCode(handoff.code);
+      onEncargoCreado?.(handoff.code);
       setIniciadoEn(Date.now());
       setTranscurrido(0);
       setTardanza(null);

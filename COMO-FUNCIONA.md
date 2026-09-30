@@ -131,9 +131,33 @@ Para verlo por dentro:
 docker exec -it convertia_db psql -U convertia -d convertia
 ```
 
+Las columnas van en camelCase, así que hay que entrecomillarlas. Los diez últimos encargos:
+
 ```sql
-SELECT code, tipo, status, created_at FROM handoffs ORDER BY "createdAt" DESC LIMIT 10;
+SELECT code, tipo, status, "createdAt" FROM handoffs ORDER BY "createdAt" DESC LIMIT 10;
 ```
+
+Solo lo que sigue pendiente:
+
+```sql
+SELECT code, name, tipo, "createdAt" FROM handoffs WHERE status = 'pendiente' ORDER BY "createdAt";
+```
+
+Lo ya entregado, con cuánto tardó cada uno:
+
+```sql
+SELECT code, tipo, ROUND(EXTRACT(EPOCH FROM ("deliveredAt" - "createdAt"))) AS segundos
+FROM handoffs WHERE status = 'entregado' ORDER BY "deliveredAt" DESC LIMIT 10;
+```
+
+Y el banco de proyectos guardados:
+
+```sql
+SELECT id, name, "createdAt", LENGTH("masterPrompt") AS prompt_chars
+FROM projects ORDER BY "createdAt" DESC;
+```
+
+Se sale de psql con `\q`.
 
 ### 4.4 El servidor MCP
 
@@ -174,6 +198,19 @@ contamina con el brief de la anterior.
 Se puede programar con cron (`*/5 * * * *`) o dejarla en manual y lanzarla con *Ejecutar
 ahora*. La segunda opción es la recomendada: revisar cada cinco minutos consume cuota aunque
 no haya trabajo.
+
+**Dónde se ejecuta, y por qué importa.** Hay tres formas de despertar a la IA, y no cuestan lo
+mismo:
+
+| Camino | Dónde corre | Qué cuota gasta |
+|--------|-------------|-----------------|
+| Rutina programada de Claude Escritorio | Conversación de chat | La de chats |
+| Vigilante (`claude -p`) | Sesión de Claude Code | La de código |
+| Pegar la frase a mano en un chat | Conversación de chat | La de chats |
+
+El vigilante es cómodo porque no hay que tocar nada, pero cada encargo abre una sesión de
+Claude Code completa, que es la cuota más cara. Si el consumo aprieta, la rutina en manual da
+el mismo resultado por mucho menos.
 
 ### 4.6 El vigilante
 
@@ -257,7 +294,9 @@ tu Claude.
   ambiente del hero hace falta Veo o Runway.
 - **Veo requiere facturación activada.** El plan gratuito de Gemini no cubre generación de
   vídeo.
-- **La generación tarda.** Entre 4 y 7 minutos por landing con las nueve técnicas activas.
+- **La generación tarda.** Entre 4 y 7 minutos por landing con las nueve técnicas activas, o
+  unos 3 en modo rápido. El cuello de botella no es pensar, es escribir: los anexos de
+  documentación posteriores al código son miles de tokens de salida, y el modo rápido los quita.
 - **Una ejecución puede fallar sin entregar.** Si la IA escribe el HTML en su respuesta antes
   de llamar a la herramienta, se queda sin espacio. Las instrucciones lo prohíben
   explícitamente y el vigilante lo detecta, pero puede ocurrir.
@@ -267,7 +306,7 @@ tu Claude.
 ## 8. Métricas para la defensa
 
 - **Prompt Maestro:** ~20.000 caracteres, ~5.200 tokens, con las 9 técnicas activas.
-- **Tiempo de generación:** 4-7 minutos por landing completa.
+- **Tiempo de generación:** 4-7 minutos por landing completa; ~3 en modo rápido.
 - **Salida:** documento HTML autosuficiente, con auditoría CRO, informe de recorte y briefing
   de activos visuales incluidos como documentación.
 - **Coste por landing:** cero con suscripción; entre 0,20 y 1 USD si se usa la API.

@@ -30,6 +30,9 @@ interface StepPromptsProps {
   masterPrompt: string;
   /** Prompt redactado por la IA, si se pidio. */
   promptIA: string | null;
+  /** Version retocada a mano, si el usuario edito el prompt. */
+  promptEditado: string | null;
+  onPromptEditado: (prompt: string | null) => void;
   individualPrompts: IndividualPrompt[];
   pastedCode: PastedCode;
   savedProjectId: string | null;
@@ -45,6 +48,8 @@ export function StepPrompts({
   mode,
   masterPrompt,
   promptIA,
+  promptEditado,
+  onPromptEditado,
   individualPrompts,
   pastedCode,
   savedProjectId,
@@ -53,8 +58,13 @@ export function StepPrompts({
   onBack,
   onSaved,
 }: StepPromptsProps) {
-  /** El prompt que se usa de verdad: el de la IA si se pidio, o el compilado. */
-  const promptEfectivo = mode === 'ia' ? (promptIA ?? masterPrompt) : masterPrompt;
+  /**
+   * El prompt que se usa de verdad, por orden de prioridad:
+   * lo que el usuario edito a mano > lo que escribio la IA > el compilado.
+   */
+  const promptBase = mode === 'ia' ? (promptIA ?? masterPrompt) : masterPrompt;
+  const promptEfectivo = promptEditado ?? promptBase;
+  const escritoPorIA = mode === 'ia' && promptIA !== null;
 
   const suggestedName = React.useMemo(() => {
     const base = brief.offer.trim() || brief.topic.trim() || 'Proyecto sin titulo';
@@ -149,10 +159,22 @@ export function StepPrompts({
               title={mode === 'ia' ? 'Prompt Maestro (version IA)' : 'Prompt Maestro'}
               subtitle="Brief + tecnicas + arquitectura + requisitos tecnicos + formato de salida + checklist."
               filename={suggestedName}
+              onPromptChange={(texto) => onPromptEditado(texto)}
+              editado={promptEditado !== null}
+              onReset={() => onPromptEditado(null)}
+              nota={escritoPorIA ? 'escrito por la IA' : 'plantilla determinista | sin IA'}
               badge={
-                <Badge variant="success" className="font-mono text-[0.65rem]">
-                  {techniques.length}/{TECHNIQUES.length} tecnicas
-                </Badge>
+                <>
+                  <Badge variant="success" className="font-mono text-[0.65rem]">
+                    {techniques.length}/{TECHNIQUES.length} tecnicas
+                  </Badge>
+                  <Badge
+                    variant={escritoPorIA ? 'default' : 'secondary'}
+                    className="font-mono text-[0.65rem]"
+                  >
+                    {escritoPorIA ? 'redactado con IA' : 'plantilla fija'}
+                  </Badge>
+                </>
               }
             />
           ) : (

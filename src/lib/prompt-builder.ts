@@ -162,7 +162,7 @@ function technicalBlock(): string {
 }
 
 /** Bloque 06 :: formato de salida. */
-function outputBlock(slugs: readonly TechniqueSlug[]): string {
+function outputBlock(slugs: readonly TechniqueSlug[], rapido = false): string {
   const ordered = sortTechniques(slugs);
   const extras: string[] = [];
 
@@ -184,10 +184,24 @@ function outputBlock(slugs: readonly TechniqueSlug[]): string {
     'B) Si lo pides por separado, entrega ademas el CSS y el JS en bloques independientes (```css y ```js),',
     '   manteniendo el HTML valido en ambos casos.',
     '',
-    'C) Secciones de apoyo, despues del codigo:',
-    ...(extras.length > 0 ? extras : ['  - (ninguna adicional activada)']),
+    ...(rapido
+      ? [
+          'C) NADA MAS. Modo rapido activado: no escribas ningun anexo despues del codigo.',
+          '   Ni tablas de activos, ni auditoria CRO, ni informe de recorte, ni mapa psicologico.',
+          '   Esas comprobaciones las haces mientras escribes, no en un documento aparte.',
+        ]
+      : [
+          'C) Secciones de apoyo, despues del codigo:',
+          ...(extras.length > 0 ? extras : ['  - (ninguna adicional activada)']),
+        ]),
     '',
     'REGLAS DE ENTREGA',
+    ...(rapido
+      ? [
+          '  - MODO RAPIDO: maximo 6 secciones en la pagina y una sola pasada de escritura.',
+          '    No reescribas la pagina entera para auditarte: corrige sobre la marcha.',
+        ]
+      : []),
     '  - No expliques el codigo linea por linea. No pidas confirmacion antes de generar.',
     '  - No dejes ningun TODO, ningun lorem ipsum ni ninguna seccion a medias.',
     '  - Si necesitas un dato que no esta en el brief, decide la opcion mas razonable y anotala',
@@ -226,6 +240,12 @@ export interface BuildOptions {
   projectName?: string;
   /** Fecha de compilacion; inyectable para que las pruebas sean deterministas. */
   compiledAt?: Date;
+  /**
+   * Modo rapido: sin anexos de documentacion y con una sola pasada de escritura.
+   * La pagina sale igual; lo que se recorta es todo lo que la IA escribe DESPUES
+   * del codigo, que es lo que hace larga la espera.
+   */
+  rapido?: boolean;
 }
 
 /**
@@ -268,7 +288,7 @@ export function buildMasterPrompt(
     '',
     technicalBlock(),
     '',
-    outputBlock(ordered),
+    outputBlock(ordered, options.rapido === true),
     '',
     checklistBlock(ordered),
     '',

@@ -43,7 +43,26 @@ export interface MetaOptions {
   projectName?: string;
   /** Semilla para que dos proyectos identicos no elijan lo mismo. */
   semilla?: number;
+  /**
+   * Modo rapido: recorta lo que hace larga la generacion (anexos de
+   * documentacion, segunda pasada critica, secciones de mas). La pagina sale
+   * igual de buena; lo que se pierde es el papeleo alrededor.
+   */
+  rapido?: boolean;
 }
+
+/** Instrucciones que abrevian el trabajo de la IA que ejecutara el prompt. */
+const BLOQUE_RAPIDO = [
+  'MODO RAPIDO ACTIVADO. El Prompt Maestro que escribas debe ordenar expresamente:',
+  '  - Entre 5 y 6 secciones como maximo, no mas.',
+  '  - Una sola pasada de escritura: nada de reescribir la pagina entera para auditarse.',
+  '    La autocritica se resuelve mientras escribe, no en una segunda version.',
+  '  - Cero anexos de documentacion despues del codigo: ni tablas de activos, ni auditoria',
+  '    CRO, ni informe de recorte, ni mapa psicologico. Solo el bloque de codigo.',
+  '  - Nada de explicar el codigo ni de resumir lo que hizo.',
+  'Esto reduce el tiempo de generacion a la mitad sin bajar la calidad de la pagina.',
+  '',
+];
 
 /**
  * Construye el encargo que se le da a la IA para que escriba el Prompt Maestro.
@@ -85,6 +104,7 @@ export function buildMetaPrompt(
     options.projectName ? `Proyecto: ${options.projectName}` : null,
     RULE,
     '',
+    ...(options.rapido ? BLOQUE_RAPIDO : []),
     'ATENCION, LEE ESTO DOS VECES:',
     'NO tienes que construir la landing page. Tu trabajo es ESCRIBIR EL ENCARGO que otra IA',
     'leera para construirla. Entregas un documento de texto, no codigo HTML.',
@@ -148,8 +168,14 @@ export function buildMetaPrompt(
     '  - Las directivas de cada tecnica activa, redactadas a medida de este proyecto.',
     '  - Requisitos tecnicos: HTML semantico, un solo h1, CSS y JS embebidos, sin dependencias,',
     '    mobile-first, contraste AA, foco visible, imagenes con dimensiones explicitas.',
-    '  - Las imagenes deben apuntar a https://picsum.photos/seed/PALABRA/ANCHO/ALTO donde PALABRA',
-    '    es una palabra clave EN INGLES descriptiva de esa foto, para que la pagina se vea terminada.',
+    '  - Las imagenes deben GENERARSE CON IA desde la propia URL, con Pollinations:',
+    '      https://image.pollinations.ai/prompt/TEXTO?width=ANCHO&height=ALTO&seed=NUMERO&nologo=true',
+    '    TEXTO es la descripcion de la foto EN INGLES y codificada para URL (espacios como %20).',
+    '    Cada imagen lleva su propia seed fija, para que no cambie al recargar. Nada de picsum',
+    '    ni de fotos de banco: la pagina debe abrirse ya terminada y con imagenes de ESTE tema.',
+    '  - Un hueco reservado para el video del presentador: exige una seccion inmediatamente',
+    '    despues del hero con <section id="presentador-convertia"> y dentro un <video controls',
+    '    playsinline> vacio. ConvertIA le pone el archivo cuando el video termina de grabarse.',
     '  - El formato de salida esperado y un checklist final de verificacion.',
     '',
     RULE,
@@ -159,7 +185,9 @@ export function buildMetaPrompt(
     '  - Entrega UNICAMENTE el Prompt Maestro. Sin preambulos, sin "aqui tienes", sin comentarios.',
     '  - No escribas HTML ni CSS: lo que entregas es un encargo en prosa e instrucciones.',
     '  - Nada generico: si una frase de tu prompt serviria igual para otro sector, reescribela.',
-    '  - Extension orientativa: entre 8.000 y 20.000 caracteres. Mejor preciso que largo.',
+    options.rapido
+      ? '  - Extension orientativa: entre 5.000 y 9.000 caracteres. Breve y sin relleno.'
+      : '  - Extension orientativa: entre 8.000 y 20.000 caracteres. Mejor preciso que largo.',
     '  - Termina el documento con una linea exactamente asi, para poder auditarlo despues:',
     `    DECISIONES: arquetipo=<el que elegiste> · tipografia=<la que elegiste> · semilla=${semilla}`,
     '',

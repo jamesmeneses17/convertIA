@@ -25,6 +25,13 @@ interface PresenterGeneratorProps {
   onChange: (code: PastedCode) => void;
   projectName: string;
   onInserted: () => void;
+  /**
+   * Contador que sube cada vez que se pide una landing. Cuando cambia, el
+   * presentador se empieza a grabar EN PARALELO, sin esperar a la pagina: el
+   * guion sale del brief, que ya existe. Cuando la landing llega, el video se
+   * inserta solo.
+   */
+  arrancarEn?: number;
 }
 
 export function PresenterGenerator({
@@ -33,6 +40,7 @@ export function PresenterGenerator({
   onChange,
   projectName,
   onInserted,
+  arrancarEn = 0,
 }: PresenterGeneratorProps) {
   const [estado, setEstado] = React.useState<EstadoModulo>({ activo: false, replicaPorDefecto: '' });
   const [guion, setGuion] = React.useState('');
@@ -41,6 +49,8 @@ export function PresenterGenerator({
   const [progreso, setProgreso] = React.useState('');
   const [video, setVideo] = React.useState<string | null>(null);
   const [error, setError] = React.useState<{ mensaje: string; detalle?: string } | null>(null);
+  const [enParalelo, setEnParalelo] = React.useState(true);
+  const [autoInsertar, setAutoInsertar] = React.useState(false);
   const abortRef = React.useRef<AbortController | null>(null);
 
   /** Carga el estado del modulo y las personas digitales disponibles. */
@@ -73,6 +83,21 @@ export function PresenterGenerator({
 
   /** Solo hace falta la landing para INSERTARLO, no para grabarlo. */
   const sinLanding = !code.html.trim();
+
+  /**
+   * Arranca la grabacion en cuanto se pide la landing, no despues. Las dos
+   * cosas corren a la vez y el video suele estar listo antes que la pagina.
+   */
+  const generarRef = React.useRef<(() => Promise<void>) | null>(null);
+  const ultimoArranque = React.useRef(0);
+
+  React.useEffect(() => {
+    if (!arrancarEn || arrancarEn === ultimoArranque.current) return;
+    ultimoArranque.current = arrancarEn;
+    if (!enParalelo || !estado.activo || !replicaId || !guion.trim() || generando) return;
+    setAutoInsertar(true);
+    void generarRef.current?.();
+  }, [arrancarEn, enParalelo, estado.activo, replicaId, guion, generando]);
 
   async function generar() {
     if (generando || !guion.trim() || !replicaId) return;
@@ -150,6 +175,22 @@ export function PresenterGenerator({
     }
   }
 
+  /**
+   * Cuando el video esta listo Y la landing ha llegado, el video entra solo.
+   * El orden da igual: gana el que termine el ultimo.
+   */
+  React.useEffect(() => {
+    if (!autoInsertar || !video || !code.html.trim()) return;
+    const { html, cambiado } = insertarPresentador(code.html, video);
+    setAutoInsertar(false);
+    if (!cambiado) return;
+    onChange({ ...code, html });
+    onInserted();
+    toast.success('Presentador insertado en la landing', {
+      description: 'Se grabo en paralelo, sin esperar a que terminara la pagina.',
+    });
+  }, [autoInsertar, video, code, onChange, onInserted]);
+
   function insertar() {
     if (!video) return;
     const { html, cambiado } = insertarPresentador(code.html, video);
@@ -163,6 +204,8 @@ export function PresenterGenerator({
     onInserted();
     toast.success('Presentador insertado tras el hero');
   }
+
+  generarRef.current = generar;
 
   if (!estado.activo) return null;
 
@@ -230,6 +273,24 @@ export function PresenterGenerator({
               </AlertDescription>
             </Alert>
           )}
+
+          <label
+            htmlFor="en-paralelo"
+            className="flex cursor-pointer items-start gap-2.5 rounded-md border border-border bg-background/60 px-3 py-2"
+          >
+            <input
+              id="en-paralelo"
+              type="checkbox"
+              checked={enParalelo}
+              onChange={(evento) => setEnParalelo(evento.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-[hsl(var(--primary))]"
+            />
+            <span className="text-xs leading-relaxed text-muted-foreground">
+              <span className="font-medium text-foreground">Grabar junto con la landing.</span> Al
+              pedir la pagina, el presentador empieza a grabarse a la vez con el guion de abajo, y se
+              inserta solo cuando las dos piezas esten listas. No hay que esperar dos turnos.
+            </span>
+          </label>
 
           <div className="space-y-1.5">
             <Label htmlFor="guion" className="text-xs">

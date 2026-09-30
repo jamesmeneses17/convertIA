@@ -30,6 +30,8 @@ interface PromptGeneratorProps {
   brief: Brief;
   techniques: TechniqueSlug[];
   projectName: string;
+  /** Modo rapido: pide a la IA un prompt mas corto y sin anexos. */
+  rapido: boolean;
   /** Se llama cuando la IA devuelve el Prompt Maestro redactado. */
   onPromptListo: (prompt: string, notas: string | null) => void;
 }
@@ -38,6 +40,7 @@ export function PromptGenerator({
   brief,
   techniques,
   projectName,
+  rapido,
   onPromptListo,
 }: PromptGeneratorProps) {
   const [code, setCode] = React.useState<string | null>(null);
@@ -131,7 +134,7 @@ export function PromptGenerator({
     entregadoRef.current = false;
 
     try {
-      const meta = buildMetaPrompt(brief, techniques, { projectName });
+      const meta = buildMetaPrompt(brief, techniques, { projectName, rapido });
       const handoff = await createPromptHandoff(
         `Prompt para: ${projectName || 'proyecto sin titulo'}`.slice(0, 120),
         meta,

@@ -1,10 +1,20 @@
 'use client';
 
 import * as React from 'react';
-import { Check, ChevronsDownUp, ChevronsUpDown, Copy, Download, ExternalLink } from 'lucide-react';
+import {
+  Check,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  Copy,
+  Download,
+  ExternalLink,
+  Pencil,
+  Undo2,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { openInClaude } from '@/lib/claude';
 import { INLINE_CLASS, LINE_CLASS, highlightPrompt } from '@/lib/highlight';
 import { copyToClipboard, countWords, downloadTextFile, estimateTokens, slugify } from '@/lib/utils';
@@ -21,6 +31,18 @@ interface PromptViewerProps {
   /** Altura maxima colapsada, en px. */
   collapsedHeight?: number;
   badge?: React.ReactNode;
+  /**
+   * Si se pasa, aparece el boton "Editar" y el prompt se puede retocar a mano
+   * antes de enviarlo. Lo que se copie, descargue o mande a Claude sera ya la
+   * version editada.
+   */
+  onPromptChange?: (prompt: string) => void;
+  /** true cuando el texto mostrado ya es una edicion manual. */
+  editado?: boolean;
+  /** Devuelve el prompt a la version original. */
+  onReset?: () => void;
+  /** Texto del sello inferior izquierdo. */
+  nota?: string;
 }
 
 export function PromptViewer({
@@ -31,9 +53,14 @@ export function PromptViewer({
   showExecute = true,
   collapsedHeight = 460,
   badge,
+  onPromptChange,
+  editado = false,
+  onReset,
+  nota = 'compilado localmente | sin API',
 }: PromptViewerProps) {
   const [copied, setCopied] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
+  const [editando, setEditando] = React.useState(false);
 
   const lines = React.useMemo(() => highlightPrompt(prompt), [prompt]);
   const stats = React.useMemo(
@@ -119,6 +146,22 @@ export function PromptViewer({
               Ejecutar en Claude
             </Button>
           ) : null}
+          {onPromptChange ? (
+            <Button
+              size="sm"
+              variant={editando ? 'success' : 'outline'}
+              onClick={() => setEditando((prev) => !prev)}
+            >
+              {editando ? <Check /> : <Pencil />}
+              {editando ? 'Listo' : 'Editar'}
+            </Button>
+          ) : null}
+          {editado && onReset ? (
+            <Button size="sm" variant="ghost" onClick={onReset} title="Volver al prompt original">
+              <Undo2 />
+              Descartar cambios
+            </Button>
+          ) : null}
           <Button size="sm" variant="ghost" onClick={handleDownload} title="Descargar como .md">
             <Download />
             <span className="sr-only sm:not-sr-only">Descargar</span>
@@ -127,6 +170,24 @@ export function PromptViewer({
       </header>
 
       <div className="relative">
+        {editando && onPromptChange ? (
+          <div className="space-y-2 p-4">
+            <Textarea
+              value={prompt}
+              onChange={(event) => onPromptChange(event.target.value)}
+              spellCheck={false}
+              aria-label={`Editar ${title}`}
+              className="scrollbar-thin min-h-[420px] font-mono text-xs leading-relaxed"
+              style={{ height: `${collapsedHeight}px` }}
+            />
+            <p className="text-[0.68rem] leading-relaxed text-muted-foreground">
+              Cambia lo que quieras: secciones, paleta, tono, lo que sea. Lo que copies, descargues o
+              mandes a Claude sera esta version. Pulsa{' '}
+              <span className="font-medium text-foreground">Listo</span> para volver a la vista con
+              colores.
+            </p>
+          </div>
+        ) : (
         <pre
           className={cn(
             'prompt-surface scrollbar-thin overflow-auto p-4 text-foreground/85',
@@ -150,8 +211,9 @@ export function PromptViewer({
             ))}
           </code>
         </pre>
+        )}
 
-        {!expanded ? (
+        {!expanded && !editando ? (
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-16 rounded-b-lg bg-gradient-to-t from-card to-transparent"
@@ -160,10 +222,15 @@ export function PromptViewer({
       </div>
 
       <footer className="flex items-center justify-between gap-3 border-t border-border/60 px-4 py-2">
-        <Badge variant="outline" className="font-mono text-[0.65rem]">
-          compilado localmente | sin API
+        <Badge variant={editado ? 'secondary' : 'outline'} className="font-mono text-[0.65rem]">
+          {editado ? 'editado a mano' : nota}
         </Badge>
-        <Button size="sm" variant="ghost" onClick={() => setExpanded((prev) => !prev)}>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setExpanded((prev) => !prev)}
+          disabled={editando}
+        >
           {expanded ? <ChevronsDownUp /> : <ChevronsUpDown />}
           {expanded ? 'Colapsar' : 'Ver completo'}
         </Button>

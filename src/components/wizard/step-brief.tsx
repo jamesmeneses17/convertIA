@@ -203,6 +203,126 @@ const EXAMPLE_BRIEFS: readonly ExampleBrief[] = [
       cta: 'Hablar con un consultor',
     },
   },
+  {
+    nombre: 'Estudio de tatuajes',
+    brief: {
+      topic: 'Estudio de tatuaje de autor en Medellin',
+      offer:
+        'Diseno original disenado contigo en una sesion previa sin costo, agujas esterilizadas de un solo uso y retoque gratuito a los 60 dias',
+      audience:
+        'Personas de 23 a 38 anos que llevan meses o anos dandole vueltas a su primer tatuaje grande y tienen panico de acabar con un diseno de catalogo que no significa nada',
+      tone: 'Artesanal y reverente, sin estetica de motero. Negro carbon, papel crudo y un rojo oxido. Fotografia macro de trazo y bocetos a lapiz',
+      cta: 'Agendar mi sesion de diseno',
+    },
+  },
+  {
+    nombre: 'Software para clinicas dentales',
+    brief: {
+      topic: 'Software de gestion para clinicas dentales pequenas',
+      offer:
+        'Agenda, historia clinica y facturacion electronica en un solo panel, con migracion de tus datos actuales incluida y sin permanencia',
+      audience:
+        'Odontologos duenos de clinicas de 1 a 4 sillas que siguen con agenda en papel o en Excel, pierden citas y dedican los sabados a cuadrar la facturacion',
+      tone: 'Limpio, clinico y tranquilizador, sin jerga de software. Blanco, azul hielo y menta. Capturas reales del producto como prueba, nada de ilustraciones abstractas',
+      cta: 'Probar 30 dias gratis',
+    },
+  },
+  {
+    nombre: 'Escuela de surf',
+    brief: {
+      topic: 'Escuela de surf en la costa del Pacifico colombiano',
+      offer:
+        'Curso de iniciacion de 5 dias con tabla y traje incluidos, grupos maximo de 4 personas y garantia de que te paras en la tabla el primer dia',
+      audience:
+        'Viajeros de 20 a 40 anos sin experiencia previa que quieren algo mas que tumbarse en la playa y les da un poco de miedo el mar abierto',
+      tone: 'Salado, luminoso y sin postureo. Azul oceano, arena y blanco quemado por el sol. Fotografia con agua en el objetivo y gente real cayendose',
+      cta: 'Reservar mi cupo',
+    },
+  },
+  {
+    nombre: 'Panaderia por suscripcion',
+    brief: {
+      topic: 'Suscripcion de pan de masa madre a domicilio',
+      offer:
+        'Dos hogazas de masa madre fermentada 24 horas cada semana, horneadas de madrugada y entregadas en tu puerta antes del desayuno',
+      audience:
+        'Hogares de 30 a 55 anos que ya no soportan el pan de supermercado, han intentado hacer masa madre en casa y abandonaron por falta de tiempo',
+      tone: 'Calido, artesanal y honesto. Harina, miel tostada y verde oliva. Fotografia de miga abierta y manos enharinadas, luz de manana',
+      cta: 'Empezar mi suscripcion',
+    },
+  },
+  {
+    nombre: 'Abogado de migracion',
+    brief: {
+      topic: 'Asesoria legal en tramites migratorios hacia Espana',
+      offer:
+        'Estudio de viabilidad de tu caso en 48 horas, expediente preparado por abogado colegiado y acompanamiento hasta la resolucion',
+      audience:
+        'Latinoamericanos de 25 a 50 anos con familia en Espana que ya recibieron una negativa o se perdieron entre requisitos contradictorios y temen volver a pagar por nada',
+      tone: 'Serio, claro y humano, sin latinajos ni promesas imposibles. Azul institucional, gris piedra y blanco. Documentos reales y plazos concretos como prueba',
+      cta: 'Solicitar estudio de mi caso',
+    },
+  },
+  {
+    nombre: 'Taller de coches electricos',
+    brief: {
+      topic: 'Taller mecanico especializado en vehiculos hibridos y electricos',
+      offer:
+        'Diagnostico de bateria con informe de salud real en 90 minutos, tecnicos certificados y presupuesto cerrado antes de tocar nada',
+      audience:
+        'Propietarios de hibridos y electricos de 30 a 60 anos a los que el concesionario les cobra el triple y ningun taller de barrio se atreve a tocarles el coche',
+      tone: 'Tecnico y transparente, de taller que ensena lo que hace. Gris grafito, blanco y un verde electrico. Fotografia de banco de trabajo y datos de diagnostico en pantalla',
+      cta: 'Pedir diagnostico de bateria',
+    },
+  },
+  {
+    nombre: 'Espacio de coworking',
+    brief: {
+      topic: 'Coworking para equipos remotos en Bogota',
+      offer:
+        'Puesto fijo con silla ergonomica, salas de reunion sin reserva previa e internet redundante de fibra, con dia de prueba gratuito',
+      audience:
+        'Freelancers y equipos remotos de 25 a 45 anos hartos de trabajar en casa entre ruido y de pagar cafes para tener wifi decente',
+      tone: 'Sobrio y adulto, nada de mesas de ping-pong ni hamacas. Madera clara, blanco roto y terracota. Fotografia de espacios reales vacios y en uso',
+      cta: 'Reservar mi dia de prueba',
+    },
+  },
+  {
+    nombre: 'Cafe de especialidad',
+    brief: {
+      topic: 'Venta online de cafe colombiano de especialidad',
+      offer:
+        'Cafe de finca unica tostado bajo pedido y enviado en 48 horas, con la fecha de tueste impresa en cada bolsa y perfil de taza detallado',
+      audience:
+        'Aficionados al cafe de 28 a 50 anos que ya tienen molino y prensa en casa, saben distinguir un cafe fresco y desconfian de las bolsas sin fecha de tueste',
+      tone: 'Preciso y sensorial, mas laboratorio que cafeteria rustica. Marron tostado, crema y un naranja quemado. Macro de grano y notas de cata como dato, no como adorno',
+      cta: 'Elegir mi tueste',
+    },
+  },
+  {
+    nombre: 'Veterinaria a domicilio',
+    brief: {
+      topic: 'Servicio veterinario a domicilio para perros y gatos',
+      offer:
+        'Consulta, vacunacion y analitica en tu casa el mismo dia, sin transportin ni sala de espera, con historia clinica digital compartida',
+      audience:
+        'Duenos de 30 a 60 anos con gatos que se aterran en el transportin o perros mayores con dificultad para moverse, que posponen las revisiones por el mal trago del traslado',
+      tone: 'Tranquilo y cuidadoso, centrado en el animal y no en el equipamiento. Verde salvia, crema y madera. Fotografia de mascotas relajadas en su propia casa',
+      cta: 'Agendar visita a domicilio',
+    },
+  },
+  {
+    nombre: 'Viajes de aventura',
+    brief: {
+      topic: 'Expediciones de trekking en la Sierra Nevada',
+      offer:
+        'Travesia guiada de 6 dias con guias locales, permisos gestionados, porteo de equipo pesado y grupos maximo de 8 personas',
+      audience:
+        'Viajeros de 28 a 45 anos con buena forma fisica y poca experiencia en alta montana, que quieren una travesia exigente pero no estan dispuestos a jugarse la vida con una agencia improvisada',
+      tone: 'Epico pero sobrio, sin exageraciones de folleto. Verde selva profundo, piedra y naranja atardecer. Fotografia de gran paisaje y detalle de equipo real',
+      cta: 'Ver fechas y disponibilidad',
+    },
+  },
 ] as const;
 
 interface StepBriefProps {

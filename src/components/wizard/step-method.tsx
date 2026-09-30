@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowLeft, CheckCheck, Combine, Info, SplitSquareHorizontal, X } from 'lucide-react';
+import { ArrowLeft, CheckCheck, Combine, Info, SplitSquareHorizontal, X, Zap } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { TechniqueCard } from '@/components/wizard/technique-card';
 import { PromptGenerator } from '@/components/wizard/prompt-generator';
@@ -15,6 +16,8 @@ import type { Brief, CompilationMode, TechniqueSlug } from '@/lib/types';
 interface StepMethodProps {
   brief: Brief;
   projectName: string;
+  rapido: boolean;
+  onRapidoChange: (rapido: boolean) => void;
   onPromptListo: (prompt: string, notas: string | null) => void;
   selected: TechniqueSlug[];
   onToggle: (slug: TechniqueSlug, active: boolean) => void;
@@ -27,6 +30,8 @@ interface StepMethodProps {
 export function StepMethod({
   brief,
   projectName,
+  rapido,
+  onRapidoChange,
   onPromptListo,
   selected,
   onToggle,
@@ -95,10 +100,36 @@ export function StepMethod({
 
           <Separator />
 
+          <label
+            htmlFor="modo-rapido"
+            className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3"
+          >
+            <Checkbox
+              id="modo-rapido"
+              checked={rapido}
+              onCheckedChange={(valor) => onRapidoChange(valor === true)}
+              className="mt-0.5"
+            />
+            <span className="min-w-0">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+                Modo rapido
+              </span>
+              <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+                Recorta lo que alarga la espera: sin anexos de documentacion despues del codigo, una
+                sola pasada de escritura y maximo 6 secciones.{' '}
+                <span className="font-medium text-foreground">La pagina sale igual de buena</span>: lo
+                que desaparece es el papeleo que la IA escribia alrededor. Baja la generacion de 7-8
+                minutos a unos 3.
+              </span>
+            </span>
+          </label>
+
           <PromptGenerator
             brief={brief}
             techniques={selected}
             projectName={projectName}
+            rapido={rapido}
             onPromptListo={onPromptListo}
           />
 
